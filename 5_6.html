@@ -8,8 +8,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Pretendard Web Font -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.css" />
+    
     <style>
-        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
         body {
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
             background-color: #f8fafc;
@@ -23,6 +25,13 @@
             background-color: #fee2e2 !important;
             border-color: #ef4444 !important;
             color: #b91c1c !important;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.25s ease-out forwards;
         }
     </style>
 </head>
@@ -38,7 +47,7 @@
                 <h2 class="text-2xl font-bold text-slate-900">학습자 정보 입력</h2>
                 <p class="text-xs text-slate-500 mt-1">퀴즈를 시작하기 위해 학번과 이름을 먼저 입력해주세요.</p>
             </div>
-            <form onsubmit="startQuizApp(event)" class="space-y-4 text-left">
+            <form onsubmit="return startQuizApp(event);" class="space-y-4 text-left">
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">학번</label>
                     <input type="text" id="initStudentId" placeholder="예: 20101" required 
@@ -746,7 +755,6 @@
         let userStudentName = "";
 
         // Structure to store answers per topic and question
-        // userAnswers = { 0: { 0: {userVal: '', isCorrect: false, checked: false}, ... }, 1: {...} }
         let userAnswers = {};
 
         // App Initialization
@@ -770,17 +778,18 @@
 
         // Student Info Registration Handler
         function startQuizApp(e) {
-            if (e) e.preventDefault();
+            if (e && e.preventDefault) e.preventDefault();
             const idInput = document.getElementById('initStudentId').value.trim();
             const nameInput = document.getElementById('initStudentName').value.trim();
 
-            if (!idInput || !nameInput) return;
+            if (!idInput || !nameInput) return false;
 
             userStudentId = idInput;
             userStudentName = nameInput;
 
             document.getElementById('userDisplay').innerText = `${userStudentId} ${userStudentName}`;
             document.getElementById('startModal').classList.add('hidden');
+            return false;
         }
 
         function openStartModal() {
@@ -904,7 +913,7 @@
                     }
 
                     qHtml += `
-                        <button onclick="selectOption(${optIdx})" class="${btnClass}">
+                        <button type="button" onclick="selectOption(${optIdx})" class="${btnClass}">
                             <span><strong class="mr-2 text-indigo-600">${optIdx + 1}.</strong> ${opt}</span>
                             ${savedState.checked && optIdx === q.answer ? '<i class="fa-solid fa-circle-check text-green-600 text-base"></i>' : ''}
                             ${savedState.checked && isSelected && optIdx !== q.answer ? '<i class="fa-solid fa-circle-xmark text-red-600 text-base"></i>' : ''}
@@ -930,14 +939,14 @@
                                    value="${savedState.userVal}" 
                                    ${savedState.checked ? 'disabled' : ''}
                                    placeholder="정답을 입력하세요"
-                                   onkeydown="if(event.key==='Enter') submitShortAnswer()"
+                                   onkeydown="if(event.key==='Enter') { submitShortAnswer(); event.preventDefault(); }"
                                    class="${inputClass}">
                             ${!savedState.checked ? `
-                                <button onclick="submitShortAnswer()" class="px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow transition-all flex-shrink-0">
+                                <button type="button" onclick="submitShortAnswer()" class="px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow transition-all flex-shrink-0">
                                     정답 제출
                                 </button>
                             ` : `
-                                <button onclick="resetShortAnswer()" class="px-4 py-3 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs rounded-xl transition-all flex-shrink-0">
+                                <button type="button" onclick="resetShortAnswer()" class="px-4 py-3 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs rounded-xl transition-all flex-shrink-0">
                                     다시 입력
                                 </button>
                             `}
