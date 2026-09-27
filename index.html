@@ -23,7 +23,7 @@
 
         .app-container {
             width: 100%;
-            max-width: 520px;
+            max-width: 550px;
             background-color: #ffffff;
             border-radius: 24px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
@@ -75,28 +75,25 @@
             justify-content: center;
             padding: 22px 20px;
             border-radius: 18px;
-            border: 2px solid transparent;
-            background: #ffffff;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
+            border: none;
             cursor: pointer;
             transition: all 0.25s ease;
-            text-decoration: none;
             position: relative;
+            text-align: left;
         }
 
         .unit-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
         }
 
-        /* 각 과별 색상 포인트 */
         .card-unit-1 {
             background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
             color: #ffffff;
         }
 
         .card-unit-2 {
-            background: linear-gradient(135deg, #37ecba 0%, #72aff3 100%);
+            background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
             color: #ffffff;
         }
 
@@ -133,7 +130,115 @@
             opacity: 0.8;
         }
 
-        /* 학번/이름 입력 모달 */
+        /* 퀴즈 풀이 영역 */
+        .quiz-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 12px;
+        }
+
+        .quiz-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .quiz-progress {
+            font-size: 0.95rem;
+            color: #3b82f6;
+            font-weight: 700;
+        }
+
+        .question-box {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #333;
+            line-height: 1.5;
+            background: #f8fafc;
+            padding: 16px;
+            border-radius: 12px;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-btn {
+            width: 100%;
+            padding: 14px 16px;
+            background: #ffffff;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            text-align: left;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-btn:hover {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .option-btn.correct {
+            background: #dcfce7 !important;
+            border-color: #22c55e !important;
+            color: #15803d;
+            font-weight: bold;
+        }
+
+        .option-btn.wrong {
+            background: #fee2e2 !important;
+            border-color: #ef4444 !important;
+            color: #b91c1c;
+        }
+
+        .explanation-box {
+            background: #f1f5f9;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            color: #475569;
+            line-height: 1.4;
+        }
+
+        .next-btn, .back-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .next-btn {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .next-btn:hover {
+            background: #2563eb;
+        }
+
+        .back-btn {
+            background: #e2e8f0;
+            color: #475569;
+            margin-top: 10px;
+        }
+
+        /* 모달 스타일 */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -190,11 +295,6 @@
             border-radius: 12px;
             font-size: 1rem;
             outline: none;
-            transition: border-color 0.2s;
-        }
-
-        .input-group input:focus {
-            border-color: #3b82f6;
         }
 
         .start-btn {
@@ -207,12 +307,6 @@
             font-size: 1.1rem;
             font-weight: 700;
             cursor: pointer;
-            margin-top: 10px;
-            transition: background 0.2s;
-        }
-
-        .start-btn:hover {
-            background: #2563eb;
         }
 
         .hidden {
@@ -243,42 +337,137 @@
 
     <!-- 메인 컨테이너 -->
     <div class="app-container">
-        <div class="header">
-            <h1>영어 문법 학습 퀴즈</h1>
-            <p>학습할 단원을 선택하세요</p>
-            <div id="userDisplay" class="user-badge hidden"></div>
+        <!-- 단원 선택 화면 -->
+        <div id="mainScreen">
+            <div class="header">
+                <h1>영어 문법 학습 퀴즈</h1>
+                <p>학습할 단원을 선택하세요</p>
+                <div id="userDisplay" class="user-badge hidden"></div>
+            </div>
+
+            <div class="card-list">
+                <div class="unit-card card-unit-1" onclick="startQuiz('5과_1')">
+                    <div class="card-title">5과 문법 1번째</div>
+                    <div class="card-subtitle">There is / There are 구문</div>
+                    <div class="card-arrow">➔</div>
+                </div>
+
+                <div class="unit-card card-unit-2" onclick="startQuiz('5과_2')">
+                    <div class="card-title">5과 문법 2번째</div>
+                    <div class="card-subtitle">비교급 & 최상급 표현</div>
+                    <div class="card-arrow">➔</div>
+                </div>
+
+                <div class="unit-card card-unit-3" onclick="startQuiz('6과_1')">
+                    <div class="card-title">6과 문법 1번째</div>
+                    <div class="card-subtitle">to부정사의 명사적 용법</div>
+                    <div class="card-arrow">➔</div>
+                </div>
+
+                <div class="unit-card card-unit-4" onclick="startQuiz('6과_2')">
+                    <div class="card-title">6과 문법 2번째</div>
+                    <div class="card-subtitle">접속사 that</div>
+                    <div class="card-arrow">➔</div>
+                </div>
+            </div>
         </div>
 
-        <!-- 세로 4개 크고 명확한 카드 -->
-        <div class="card-list">
-            <div class="unit-card card-unit-1" onclick="selectUnit('5과_1')">
-                <div class="card-title">5과 문법 1번째</div>
-                <div class="card-subtitle">There is / There are 구문</div>
-                <div class="card-arrow">➔</div>
+        <!-- 퀴즈 풀이 화면 -->
+        <div id="quizScreen" class="quiz-container hidden">
+            <div class="quiz-header">
+                <span id="quizTitle" class="quiz-title">단원명</span>
+                <span id="quizProgress" class="quiz-progress">1 / 10</span>
             </div>
 
-            <div class="unit-card card-unit-2" onclick="selectUnit('5과_2')">
-                <div class="card-title">5과 문법 2번째</div>
-                <div class="card-subtitle">비교급 & 최상급 표현</div>
-                <div class="card-arrow">➔</div>
-            </div>
+            <div id="questionBox" class="question-box">문제가 여기에 표시됩니다.</div>
 
-            <div class="unit-card card-unit-3" onclick="selectUnit('6과_1')">
-                <div class="card-title">6과 문법 1번째</div>
-                <div class="card-subtitle">to부정사의 명사적 용법</div>
-                <div class="card-arrow">➔</div>
-            </div>
+            <div id="optionsList" class="options-list"></div>
 
-            <div class="unit-card card-unit-4" onclick="selectUnit('6과_2')">
-                <div class="card-title">6과 문법 2번째</div>
-                <div class="card-subtitle">접속사 that</div>
-                <div class="card-arrow">➔</div>
+            <div id="explanationBox" class="explanation-box hidden"></div>
+
+            <button id="nextBtn" class="next-btn hidden" onclick="nextQuestion()">다음 문제</button>
+            <button class="back-btn" onclick="goHome()">단원 선택으로 돌아가기</button>
+        </div>
+
+        <!-- 결과 화면 -->
+        <div id="resultScreen" class="quiz-container hidden" style="text-align: center;">
+            <div class="header">
+                <h2>퀴즈 완료! 🎉</h2>
+                <p id="resultText" style="font-size: 1.2rem; margin-top: 15px; color: #333;"></p>
             </div>
+            <button class="next-btn" onclick="goHome()">메인으로 돌아가기</button>
         </div>
     </div>
 
     <script>
-        // 학번 이름 저장 로직
+        // 퀴즈 데이터 (단원별 10문항)
+        const quizData = {
+            '5과_1': {
+                title: '5과: There is / There are',
+                questions: [
+                    { q: '다음 빈칸에 알맞은 것은? "_____ a book on the desk."', options: ['There is', 'There are', 'There be', 'Is there'], answer: 0, exp: 'a book은 단수명사이므로 There is를 씁니다.' },
+                    { q: '다음 빈칸에 알맞은 것은? "_____ many students in the classroom."', options: ['There is', 'There are', 'Is there', 'Are there'], answer: 1, exp: 'many students는 복수명사이므로 There are를 씁니다.' },
+                    { q: '다음 빈칸에 알맞은 것은? "_____ an apple in the basket?"', options: ['There is', 'There are', 'Is there', 'Are there'], answer: 2, exp: '단수명사의 의문문은 Is there...? 형태를 씁니다.' },
+                    { q: '다음 빈칸에 알맞은 것은? "_____ two cats under the table."', options: ['There is', 'There are', 'Is there', 'Are there'], answer: 1, exp: 'two cats는 복수명사이므로 There are가 맞습니다.' },
+                    { q: '다음 중 어법상 어색한 문장은?', options: ['There is a dog.', 'There are three dogs.', 'There is two apples.', 'There are many cars.'], answer: 2, exp: 'two apples는 복수이므로 There is가 아니라 There are를 써야 합니다.' },
+                    { q: '빈칸에 들어갈 말이 순서대로 짝지어진 것은? "There _____ a pen. There _____ four pens."', options: ['is - is', 'are - are', 'is - are', 'are - is'], answer: 2, exp: 'a pen은 단수(is), four pens는 복수(are)입니다.' },
+                    { q: '다음 문장의 부정문으로 알맞은 것은? "There is milk in the fridge."', options: ['There is no milk in the fridge.', 'There are not milk in the fridge.', 'There not is milk in the fridge.', 'There is not no milk in the fridge.'], answer: 0, exp: 'There is not any milk 또는 There is no milk 형태로 표현합니다.' },
+                    { q: '다음 빈칸에 알맞은 것은? "_____ any water in the glass?"', options: ['Is there', 'Are there', 'There is', 'There are'], answer: 0, exp: 'water는 셀 수 없는 명사이므로 단수 취급하여 Is there를 씁니다.' },
+                    { q: '다음 빈칸에 알맞은 것은? "There _____ some trees in the park."', options: ['is', 'are', 'be', 'was not'], answer: 1, exp: 'some trees는 복수명사이므로 are가 적절합니다.' },
+                    { q: '다음 문장을 의문문으로 바꾼 것은? "There are some pictures on the wall."', options: ['Are there any pictures on the wall?', 'Is there any pictures on the wall?', 'There are any pictures on the wall?', 'Are there some pictures on the wall?'], answer: 0, exp: '의문문에서는 some이 any로 바뀝니다.' }
+                ]
+            },
+            '5과_2': {
+                title: '5과: 비교급 & 최상급',
+                questions: [
+                    { q: 'tall의 비교급과 최상급이 바르게 연결된 것은?', options: ['taller - tallest', 'more tall - most tall', 'taller - most tall', 'more tall - tallest'], answer: 0, exp: 'tall은 short adjective로 -er, -est를 붙입니다.' },
+                    { q: 'beautiful의 비교급으로 알맞은 것은?', options: ['beautifuler', 'more beautiful', 'beautifulest', 'most beautiful'], answer: 1, exp: '3음절 이상의 긴 단어는 앞에 more를 붙입니다.' },
+                    { q: 'good의 비교급과 최상급은?', options: ['gooder - goodest', 'better - best', 'more good - most good', 'better - most good'], answer: 1, exp: 'good은 불규칙 변화로 good - better - best 입니다.' },
+                    { q: '다음 빈칸에 알맞은 것은? "Jupiter is _____ planet in our solar system."', options: ['big', 'bigger', 'the biggest', 'most big'], answer: 2, exp: '최상급 앞에는 정관사 the가 붙습니다.' },
+                    { q: '다음 빈칸에 알맞은 것은? "Tom is _____ than Sam."', options: ['tall', 'taller', 'tallest', 'the tallest'], answer: 1, exp: 'than 앞에는 비교급(taller)이 와야 합니다.' },
+                    { q: 'heavy의 비교급 형태는?', options: ['heavyer', 'heavier', 'more heavy', 'heaviest'], answer: 1, exp: '자음+y로 끝나는 단어는 y를 i로 바꾸고 -er을 붙입니다.' },
+                    { q: '다음 중 어법상 옳은 문장은?', options: ['He is more faster than me.', 'She is the most prettiest girl.', 'This book is more interesting than that one.', 'I am taller as you.'], answer: 2, exp: 'more와 -er, most와 -est는 이중으로 쓰지 않습니다.' },
+                    { q: 'fast - faster - _____ 빈칸에 들어갈 말은?', options: ['fastest', 'most fast', 'fastly', 'more fast'], answer: 0, exp: 'fast - faster - fastest 순입니다.' },
+                    { q: 'bad의 비교급 형태는?', options: ['badder', 'worse', 'worst', 'more bad'], answer: 1, exp: 'bad의 비교급은 불규칙 변화인 worse입니다.' },
+                    { q: '다음 빈칸에 알맞은 것은? "English is _____ subject for me."', options: ['important', 'more important', 'the most important', 'importanter'], answer: 2, exp: '가장 중요한 과목이라는 의미로 최상급 the most important가 맞습니다.' }
+                ]
+            },
+            '6과_1': {
+                title: '6과: to부정사의 명사적 용법',
+                questions: [
+                    { q: '다음 밑줄 친 to부정사의 용법은? "My goal is _to pass_ the exam."', options: ['주어 역할', '보어 역할', '목적어 역할', '형용사적 용법'], answer: 1, exp: 'be동사 is 뒤에서 주어를 보충 설명하는 보어 역할입니다.' },
+                    { q: '다음 빈칸에 알맞은 것은? "_____ English is fun."', options: ['To learn', 'Learn', 'Learned', 'Learner'], answer: 0, exp: '문장의 주어 자리에 오는 to부정사 명사적 용법입니다.' },
+                    { q: '다음 밑줄 친 부분의 역할은? "I want _to study_ science."', options: ['주어', '목적어', '보어', '부사'], answer: 1, exp: 'want 동사의 목적어 역할을 하고 있습니다.' },
+                    { q: '다음 중 to부정사를 목적어로 취하는 동사가 아닌 것은?', options: ['want', 'hope', 'decide', 'finish'], answer: 3, exp: 'finish는 동명사(-ing)만을 목적어로 취합니다.' },
+                    { q: '다음 문장과 해석이 같은 것은? "It is easy to solve this problem."', options: ['이 문제를 푸는 것은 쉽다.', '이 문제는 쉽게 풀렸다.', '이 문제를 풀어서 쉽다.', '이 문제를 풀기 위해 쉽다.'], answer: 0, exp: '가주어 It, 진주어 to solve 구문입니다.' },
+                    { q: '다음 빈칸에 알맞은 것은? "He decided _____ a new car."', options: ['buy', 'buying', 'to buy', 'bought'], answer: 2, exp: 'decide는 to부정사를 목적어로 취합니다.' },
+                    { q: '다음 밑줄 친 쓰임이 다른 하나는?', options: ['To read books is good.', 'I like to play soccer.', 'His job is to teach students.', 'I have no time to rest.'], answer: 3, exp: '4번은 time을 꾸며주는 형용사적 용법이고, 나머지 1~3번은 명사적 용법입니다.' },
+                    { q: '다음 빈칸에 알맞은 것은? "She hopes _____ a famous singer."', options: ['become', 'to become', 'becoming', 'became'], answer: 1, exp: 'hope는 to부정사를 목적어로 받습니다.' },
+                    { q: '가주어 it을 사용한 올바른 표현은?', options: ['It is important to study.', 'To study is it important.', 'That is important to study.', 'It study is important.'], answer: 0, exp: 'It is + 형용사 + to부정사 구조가 올바릅니다.' },
+                    { q: '다음 밑줄 친 부분의 역할은? "To see is _to believe_."', options: ['주어', '보어', '목적어', '부사'], answer: 1, exp: '보는 것이 믿는 것이다에서 is 뒤 보어 역할입니다.' }
+                ]
+            },
+            '6과_2': {
+                title: '6과: 접속사 that',
+                questions: [
+                    { q: '다음 빈칸에 알맞은 접속사는? "I think _____ she is very kind."', options: ['that', 'what', 'which', 'who'], answer: 0, exp: 'think의 목적어 절을 이끄는 접속사 that이 알맞습니다.' },
+                    { q: '다음 중 접속사 that의 생략이 불가능한 경우는?', options: ['I believe that he is honest.', 'I know that she loves music.', 'That he is honest is true.', 'She said that she was happy.'], answer: 2, exp: '주어 자리에 위치한 접속사 that절의 that은 생략할 수 없습니다.' },
+                    { q: '다음 빈칸에 알맞은 것은? "I hope _____ you will get well soon."', options: ['that', 'which', 'where', 'because'], answer: 0, exp: 'hope의 목적어 역할을 하는 명사절 접속사 that입니다.' },
+                    { q: '다음 두 문장을 한 문장으로 바르게 연결한 것은? "I know." + "She is a teacher."', options: ['I know that she is a teacher.', 'I know she is that a teacher.', 'I know what she is a teacher.', 'I know that is she a teacher.'], answer: 0, exp: '접속사 that을 사용하여 [I know + that + 주어 + 동사] 구조로 만듭니다.' },
+                    { q: '다음 밑줄 친 that의 쓰임이 다른 하나는?', options: ['I think that he is right.', 'Look at that boy.', 'She knows that I am here.', 'We believe that peace is important.'], answer: 1, exp: '2번의 that은 저(저 소년)를 뜻하는 지시형용사이고, 나머지는 접속사입니다.' },
+                    { q: '다음 빈칸에 알맞은 것은? "It is true _____ earth goes around the sun."', options: ['that', 'which', 'what', 'who'], answer: 0, exp: '가주어 It, 진주어 that절 구문입니다.' },
+                    { q: '다음 중 어법상 어색한 문장은?', options: ['I think that he is smart.', 'I hope that you win.', 'I know that where he lives.', 'She believes that God exists.'], answer: 2, exp: '접속사 that과 의문사 where를 이중으로 사용할 수 없습니다.' },
+                    { q: '다음 문장에서 생략 가능한 단어는? "I heard that you moved to Seoul."', options: ['heard', 'that', 'you', 'moved'], answer: 1, exp: '동사의 목적어 역할을 하는 접속사 that은 생략이 가능합니다.' },
+                    { q: '다음 빈칸에 알맞은 것은? "He said _____ he was tired."', options: ['that', 'what', 'which', 'how'], answer: 0, exp: 'said의 목적어로 명사절을 이끄는 접속사 that이 사용됩니다.' },
+                    { q: '다음 문장의 의미는? "I believe that practice makes perfect."', options: ['연습이 완벽을 만든다고 나는 믿는다.', '완벽한 연습이 필요하다고 믿는다.', '나는 연습을 믿는다.', '완벽은 연습에서 나온다.'], answer: 0, exp: 'that절 전체가 believe의 목적어로 해석됩니다.' }
+                ]
+            }
+        };
+
+        let currentUnit = null;
+        let currentIdx = 0;
+        let score = 0;
+
         function saveUserInfo(e) {
             e.preventDefault();
             const id = document.getElementById('studentId').value.trim();
@@ -287,7 +476,6 @@
             if (id && name) {
                 localStorage.setItem('studentId', id);
                 localStorage.setItem('studentName', name);
-                
                 document.getElementById('modalOverlay').classList.add('hidden');
                 displayUserInfo(id, name);
             }
@@ -299,12 +487,96 @@
             display.classList.remove('hidden');
         }
 
-        function selectUnit(unitKey) {
-            alert(`${unitKey} 문제로 이동합니다!`);
-            // 실제 문제 페이지 이동 또는 문제 출력 로직 연결
+        function startQuiz(unitKey) {
+            currentUnit = quizData[unitKey];
+            currentIdx = 0;
+            score = 0;
+
+            document.getElementById('mainScreen').classList.add('hidden');
+            document.getElementById('resultScreen').classList.add('hidden');
+            document.getElementById('quizScreen').classList.remove('hidden');
+
+            document.getElementById('quizTitle').textContent = currentUnit.title;
+            loadQuestion();
         }
 
-        // 페이지 로드 시 기존 정보 확인
+        function loadQuestion() {
+            const qData = currentUnit.questions[currentIdx];
+            document.getElementById('quizProgress').textContent = `${currentIdx + 1} / ${currentUnit.questions.length}`;
+            document.getElementById('questionBox').textContent = `Q${currentIdx + 1}. ${qData.q}`;
+
+            const optionsList = document.getElementById('optionsList');
+            optionsList.innerHTML = '';
+
+            const explanationBox = document.getElementById('explanationBox');
+            explanationBox.classList.add('hidden');
+            explanationBox.textContent = '';
+
+            document.getElementById('nextBtn').classList.add('hidden');
+
+            qData.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = `${idx + 1}. ${opt}`;
+                btn.onclick = () => checkAnswer(idx);
+                optionsList.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selectedIdx) {
+            const qData = currentUnit.questions[currentIdx];
+            const buttons = document.querySelectorAll('.option-btn');
+
+            buttons.forEach((btn, idx) => {
+                btn.disabled = true;
+                if (idx === qData.answer) {
+                    btn.classList.add('correct');
+                }
+                if (idx === selectedIdx && selectedIdx !== qData.answer) {
+                    btn.classList.add('wrong');
+                }
+            });
+
+            if (selectedIdx === qData.answer) {
+                score++;
+            }
+
+            const explanationBox = document.getElementById('explanationBox');
+            explanationBox.textContent = `💡 해설: ${qData.exp}`;
+            explanationBox.classList.remove('hidden');
+
+            document.getElementById('nextBtn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentIdx++;
+            if (currentIdx < currentUnit.questions.length) {
+                loadQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            document.getElementById('quizScreen').classList.add('hidden');
+            document.getElementById('resultScreen').classList.remove('hidden');
+
+            const id = localStorage.getItem('studentId') || '';
+            const name = localStorage.getItem('studentName') || '';
+
+            document.getElementById('resultText').innerHTML = `
+                <strong>${id} ${name}</strong> 님 수고하셨습니다!<br><br>
+                점수: <strong>${score * 10}점</strong> / 100점<br>
+                (총 ${currentUnit.questions.length}문항 중 ${score}문항 정답)
+            `;
+        }
+
+        function goHome() {
+            document.getElementById('quizScreen').classList.add('hidden');
+            document.getElementById('resultScreen').classList.add('hidden');
+            document.getElementById('mainScreen').classList.remove('hidden');
+        }
+
         window.onload = function() {
             const savedId = localStorage.getItem('studentId');
             const savedName = localStorage.getItem('studentName');
