@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>중등 영어 5과 · 6과 단원별 문법 마스터 퀴즈</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            background-color: #f8fafc;
+        }
+        .correct-bg {
+            background-color: #dcfce7 !important;
+            border-color: #22c55e !important;
+            color: #15803d !important;
+        }
+        .incorrect-bg {
+            background-color: #fee2e2 !important;
+            border-color: #ef4444 !important;
+            color: #b91c1c !important;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 flex flex-col justify-between">
+
+    <!-- Start Modal (Student Info Entry - Shown First) -->
+    <div id="startModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 text-center space-y-5 animate-fade-in">
+            <div class="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mx-auto text-3xl">
+                <i class="fa-solid fa-user-graduate"></i>
+            </div>
+            <div>
+                <h2 class="text-2xl font-bold text-slate-900">학습자 정보 입력</h2>
+                <p class="text-xs text-slate-500 mt-1">퀴즈를 시작하기 위해 학번과 이름을 먼저 입력해주세요.</p>
+            </div>
+            <form onsubmit="startQuizApp(event)" class="space-y-4 text-left">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">학번</label>
+                    <input type="text" id="initStudentId" placeholder="예: 20101" required 
+                           class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">이름</label>
+                    <input type="text" id="initStudentName" placeholder="예: 홍길동" required 
+                           class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+                </div>
+                <button type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg transition-all text-sm flex items-center justify-center space-x-2">
+                    <span>학습 시작하기</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Header Section -->
+    <header class="bg-indigo-700 text-white shadow-lg sticky top-0 z-30">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="showTopicMenu()">
+                <i class="fa-solid fa-book-open-reader text-yellow-300 text-2xl"></i>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight">중등 영어 5과 · 6과 문법 퀴즈</h1>
+                    <p class="text-xs text-indigo-200">단원별 10문항 맞춤 학습 프로그램</p>
+                </div>
+            </div>
+
+            <!-- Saved Student Display Badge -->
+            <div class="flex items-center space-x-3 bg-indigo-800/80 px-4 py-2 rounded-lg border border-indigo-500/50 shadow-inner">
+                <i class="fa-solid fa-id-card text-yellow-300 text-lg"></i>
+                <div>
+                    <span id="userBadge" class="text-xs font-bold text-indigo-200 block">응시자 정보</span>
+                    <span id="userDisplay" class="text-sm font-bold text-white">미등록</span>
+                </div>
+                <button onclick="openStartModal()" class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-2 py-1 rounded ml-2 transition-colors">
+                    수정
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-4xl mx-auto px-4 py-6 flex-grow w-full">
+
+        <!-- VIEW 1: Topic Selection Screen (Main Menu) -->
+        <div id="topicMenuView" class="space-y-6">
+            <div class="bg-indigo-50 border border-indigo-200 rounded-2xl p-5 text-indigo-900 flex items-start space-x-4 shadow-sm">
+                <div class="w-12 h-12 bg-indigo-600 text-white rounded-xl flex items-center justify-center text-xl flex-shrink-0 shadow">
+                    <i class="fa-solid fa-list-check"></i>
+                </div>
+                <div>
+                    <h2 class="text-lg font-bold text-indigo-950">학습할 문법 단원을 선택하세요</h2>
+                    <p class="text-xs text-indigo-700 mt-1 leading-relaxed">
+                        원하는 문법 단원을 클릭하여 10문항 퀴즈를 진행하세요. 풀이 후 바로 단원별 점수와 해설을 확인할 수 있습니다.
+                    </p>
+                </div>
+            </div>
+
+            <!-- 4 Topic Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                
+                <!-- Topic 0 -->
+                <div onclick="selectTopic(0)" class="bg-white hover:border-indigo-400 border border-slate-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="px-3 py-1 bg-blue-100 text-blue-700 font-extrabold text-xs rounded-full">5과 문법 ①</span>
+                            <span id="badge-topic-0" class="text-xs font-semibold px-2.5 py-1 bg-slate-100 text-slate-500 rounded-lg">미응시</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">There is / There are 구문</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">단수/복수 주어에 따른 be동사 선택, 부정문 및 의문문 표현 (10문항)</p>
+                    </div>
+                    <div class="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-indigo-600">
+                        <span>10문항 풀기</span>
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </div>
+
+                <!-- Topic 1 -->
+                <div onclick="selectTopic(1)" class="bg-white hover:border-indigo-400 border border-slate-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="px-3 py-1 bg-emerald-100 text-emerald-700 font-extrabold text-xs rounded-full">5과 문법 ②</span>
+                            <span id="badge-topic-1" class="text-xs font-semibold px-2.5 py-1 bg-slate-100 text-slate-500 rounded-lg">미응시</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">비교급과 최상급</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">규칙/불규칙 비교급·최상급 변화, than, as~as, 비교급 강조어구 (10문항)</p>
+                    </div>
+                    <div class="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-indigo-600">
+                        <span>10문항 풀기</span>
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </div>
+
+                <!-- Topic 2 -->
+                <div onclick="selectTopic(2)" class="bg-white hover:border-indigo-400 border border-slate-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="px-3 py-1 bg-purple-100 text-purple-700 font-extrabold text-xs rounded-full">6과 문법 ①</span>
+                            <span id="badge-topic-2" class="text-xs font-semibold px-2.5 py-1 bg-slate-100 text-slate-500 rounded-lg">미응시</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">to부정사의 명사적 용법</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">주어, 목적어, 보어 역할 및 가주어 It ~ 진주어 to부정사 (10문항)</p>
+                    </div>
+                    <div class="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-indigo-600">
+                        <span>10문항 풀기</span>
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </div>
+
+                <!-- Topic 3 -->
+                <div onclick="selectTopic(3)" class="bg-white hover:border-indigo-400 border border-slate-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="px-3 py-1 bg-amber-100 text-amber-700 font-extrabold text-xs rounded-full">6과 문법 ②</span>
+                            <span id="badge-topic-3" class="text-xs font-semibold px-2.5 py-1 bg-slate-100 text-slate-500 rounded-lg">미응시</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">명사절을 이끄는 접속사 that</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">목적어절 접속사 that, that의 쓰임 구분 및 생략 여부 (10문항)</p>
+                    </div>
+                    <div class="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-indigo-600">
+                        <span>10문항 풀기</span>
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- VIEW 2: Quiz Solver View (10 Questions for Selected Topic) -->
+        <div id="quizSolverView" class="hidden space-y-4">
+            
+            <!-- Unit Top Nav Bar -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center space-x-3 w-full md:w-auto">
+                    <button onclick="showTopicMenu()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition-colors flex items-center space-x-1">
+                        <i class="fa-solid fa-chevron-left"></i>
+                        <span>단원 목록</span>
+                    </button>
+                    <div>
+                        <span id="quizUnitTitleBadge" class="px-2.5 py-0.5 text-xs font-extrabold bg-indigo-100 text-indigo-700 rounded-full">5과 문법 ①</span>
+                        <h2 id="quizUnitTitle" class="text-sm font-bold text-slate-900 mt-0.5">There is / There are 구문</h2>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-4 w-full md:w-auto justify-between md:justify-end">
+                    <div class="w-36 md:w-48">
+                        <div class="flex justify-between items-center mb-1 text-xs font-bold text-indigo-700">
+                            <span id="unitProgressText">문제 1 / 10</span>
+                            <span id="unitPercentageBadge">10%</span>
+                        </div>
+                        <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                            <div id="unitProgressBar" class="bg-indigo-600 h-2 rounded-full transition-all duration-300" style="width: 10%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200 text-center flex-shrink-0">
+                        <span class="text-xs text-slate-500 font-medium block">현재 단원 점수</span>
+                        <span class="text-base font-bold text-indigo-600"><span id="unitScore">0</span> / 10점</span>
+                    </div>
+
+                    <button onclick="submitUnitQuiz()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-2 rounded-lg transition-colors shadow flex items-center space-x-1 flex-shrink-0">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <span>단원 제출</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Question Card Container -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 min-h-[420px] flex flex-col justify-between">
+                <div id="questionCardArea">
+                    <!-- Single Question dynamically rendered here -->
+                </div>
+
+                <!-- Card Bottom Action Navigation Controls -->
+                <div class="pt-6 mt-6 border-t border-slate-100 flex items-center justify-between">
+                    <button id="prevBtn" onclick="prevUnitQuestion()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-bold rounded-xl transition-colors flex items-center space-x-2">
+                        <i class="fa-solid fa-chevron-left"></i>
+                        <span>이전 문제</span>
+                    </button>
+
+                    <div class="text-xs text-slate-400 font-medium hidden sm:block">
+                        정답 선택 시 해설이 바로 나타납니다.
+                    </div>
+
+                    <button id="nextBtn" onclick="nextUnitQuestion()" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded-xl shadow-md transition-all flex items-center space-x-2">
+                        <span>다음 문제</span>
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Result Score Card Modal -->
+        <div id="resultModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+            <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden transform transition-all">
+                <div class="bg-indigo-600 text-white p-6 text-center relative">
+                    <div class="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-2 text-2xl">
+                        <i class="fa-solid fa-trophy text-yellow-300"></i>
+                    </div>
+                    <h3 class="text-xl font-bold" id="modalUnitTitle">5과 문법 ① 성적표</h3>
+                    <p id="modalStudentName" class="text-xs text-indigo-200 mt-1">학번 / 이름</p>
+                </div>
+                <div class="p-6 space-y-5">
+                    <div class="grid grid-cols-2 gap-3 text-center">
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                            <p class="text-xs text-slate-500 font-medium">단원 정답 수</p>
+                            <p class="text-2xl font-extrabold text-blue-600"><span id="modalCorrectCount">0</span> / 10</p>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                            <p class="text-xs text-slate-500 font-medium">단원 성취도</p>
+                            <p class="text-2xl font-extrabold text-indigo-600"><span id="modalPercentage">0</span>%</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-4 rounded-xl border border-blue-200 text-xs text-blue-900 leading-relaxed">
+                        <p id="modalFeedback" class="font-bold mb-1 text-sm"></p>
+                        <p>해설 복습 버튼을 누르면 문제 카드로 돌아가 제출한 오답 및 해설을 다시 확인하실 수 있습니다.</p>
+                    </div>
+
+                    <div class="space-y-2">
+                        <button onclick="closeModalAndReview()" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl transition-colors shadow">
+                            해설 및 오답 복습하기
+                        </button>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="restartCurrentTopic()" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-colors">
+                                이 단원 다시 풀기
+                            </button>
+                            <button onclick="closeModalToMenu()" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition-colors">
+                                다른 단원 선택하기
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- JavaScript Data and Logic -->
+    <script>
+        // Grammar Quiz Questions Data (40 Items total, 10 items per topic)
+        const quizData = [
+            // Topic 0: 5과 Point 1 - There is / There are (10문항)
+            {
+                tabIndex: 0,
+                tabName: "5과-1",
+                category: "5과 문법 ①",
+                title: "There is / There are 구문",
+                questions: [
+                    {
+                        id: 1,
+                        type: "mc",
+                        question: "다음 빈칸에 들어갈 알맞은 be동사는?",
+                        passage: "There ______ a lot of interesting books on the desk.",
+                        options: ["is", "are", "am", "be"],
+                        answer: 1,
+                        explanation: "There is/are 구문에서 주어는 be동사 뒤에 오는 명사입니다. books는 복수명사이므로 복수 be동사인 are가 올바릅니다."
+                    },
+                    {
+                        id: 2,
+                        type: "mc",
+                        question: "다음 빈칸에 들어갈 부정문 형태가 바르게 짝지어진 것은?",
+                        passage: "There ______ any water in the bottle, but there ______ some apples on the table.",
+                        options: ["isn't - are", "aren't - is", "is - aren't", "are - isn't"],
+                        answer: 0,
+                        explanation: "water는 셀 수 없는 단수명사이므로 isn't, apples는 셀 수 있는 복수명사이므로 are가 어법상 올바릅니다."
+                    },
+                    {
+                        id: 3,
+                        type: "mc",
+                        question: "어법상 틀린 문장은?",
+                        options: [
+                            "There is a cute cat under the tree.",
+                            "There are two dogs in the yard.",
+                            "There are a big park near my house.",
+                            "There is some bread on the table."
+                        ],
+                        answer: 2,
+                        explanation: "3번 문장의 주어는 a big park(단수명사)이므로 are를 is로 고쳐야 합니다."
+                    },
+                    {
+                        id: 4,
+                        type: "mc",
+                        question: "다음 의문문 빈칸에 들어갈 알맞은 말은?",
+                        passage: "______ there any students in the classroom yesterday?",
+                        options: ["Is", "Are", "Was", "Were"],
+                        answer: 3,
+                        explanation: "어구 yesterday가 있으므로 과거시제이고, 주어가 복수명사(students)이므로 과거 복수 be동사인 Were가 올바릅니다."
+                    },
+                    {
+                        id: 5,
+                        type: "mc",
+                        question: "다음 두 문장을 There is/are 구문을 사용하여 한 문장으로 바르게 고친 것은?",
+                        passage: "A big tree was in front of my house.",
+                        options: [
+                            "There is a big tree in front of my house.",
+                            "There was a big tree in front of my house.",
+                            "There are a big tree in front of my house.",
+                            "There were a big tree in front of my house."
+                        ],
+                        answer: 1,
+                        explanation: "원문의 시제가 과거(was)이고 주어가 단수(A big tree)이므로 'There was ~' 형태가 되어야 합니다."
+                    },
+                    {
+                        id: 6,
+                        type: "mc",
+                        question: "다음 빈칸에 들어갈 알맞은 표현은?",
+                        passage: "There ______ a bakery and two banks on this street.",
+                        options: ["is", "are", "were not", "have"],
+                        answer: 0,
+                        explanation: "There is/are 뒤에 나열되는 첫 번째 명사(a bakery)가 단수이므로 근접의 원칙에 따라 단수동사 is를 씁니다."
+                    },
+                    {
+                        id: 7,
+                        type: "mc",
+                        question: "대화의 빈칸에 들어갈 대답으로 가장 알맞은 것은?",
+                        passage: "A: Is there any milk in the refrigerator?<br>B: No, ______.",
+                        options: ["there is", "there isn't", "there are", "there aren't"],
+                        answer: 1,
+                        explanation: "Is there ~ ? 질문에 부정으로 답할 때는 'No, there isn't.'라고 대답합니다."
+                    },
+                    {
+                        id: 8,
+                        type: "sa",
+                        question: "[단답형] 빈칸에 알맞은 be동사 현재형 1단어를 입력하세요.",
+                        passage: "There ______ three apples on the plate.",
+                        answer: ["are"],
+                        explanation: "주어가 복수명사(three apples)이므로 현재형 복수 be동사인 are가 올바릅니다."
+                    },
+                    {
+                        id: 9,
+                        type: "sa",
+                        question: "[단답형] 빈칸에 알맞은 be동사 과거형 1단어를 입력하세요.",
+                        passage: "There ______ many people in the park last Sunday.",
+                        answer: ["were"],
+                        explanation: "과거를 나타내는 last Sunday가 있고 주어가 복수(many people)이므로 were가 정답입니다."
+                    },
+                    {
+                        id: 10,
+                        type: "sa",
+                        question: "[단답형] 괄호 안의 단어를 활용하여 알맞은 부정형(be+not 축약형 1단어)을 입력하세요.",
+                        passage: "There ______ (be not) any juice left in the cup.",
+                        answer: ["isn't"],
+                        explanation: "juice는 셀 수 없는 단수명사이므로 is not의 축약형인 isn't가 들어갑니다."
+                    }
+                ]
+            },
+
+            // Topic 1: 5과 Point 2 - 비교급과 최상급 (10문항)
+            {
+                tabIndex: 1,
+                tabName: "5과-2",
+                category: "5과 문법 ②",
+                title: "비교급과 최상급",
+                questions: [
+                    {
+                        id: 1,
+                        type: "mc",
+                        question: "다음 형용사/부사의 비교급·최상급 변화가 어색한 것은?",
+                        options: [
+                            "tall - taller - tallest",
+                            "happy - happier - happiest",
+                            "good - better - best",
+                            "famous - famouser - famousest"
+                        ],
+                        answer: 3,
+                        explanation: "famous는 2음절 이상의 형용사로 비교급은 more famous, 최상급은 most famous로 나타냅니다."
+                    },
+                    {
+                        id: 2,
+                        type: "mc",
+                        question: "다음 빈칸에 들어갈 말로 가장 알맞은 것은?",
+                        passage: "A plane is much ______ than a train.",
+                        options: ["fast", "faster", "fastest", "more fast"],
+                        answer: 1,
+                        explanation: "뒤에 than이 있으므로 비교급 표현이 와야 합니다. fast의 비교급은 faster입니다. (much는 비교급 강조어구)"
+                    },
+                    {
+                        id: 3,
+                        type: "mc",
+                        question: "어법상 바른 문장은?",
+                        options: [
+                            "Jupiter is the largest planet in the solar system.",
+                            "She is more taller than her brother.",
+                            "This book is as better as that one.",
+                            "He is one of the most famous singer in Korea."
+                        ],
+                        answer: 0,
+                        explanation: "1번이 정답입니다. (2번: more taller -> taller, 3번: as better as -> as good as, 4번: singer -> singers 'one of the 최상급 + 복수명사')"
+                    },
+                    {
+                        id: 4,
+                        type: "mc",
+                        question: "다음 비교급 수식어구 중 빈칸에 들어갈 수 없는 것은?",
+                        passage: "This math problem is ______ more difficult than that one.",
+                        options: ["much", "even", "very", "far"],
+                        answer: 2,
+                        explanation: "비교급을 강조할 때는 much, even, far, still, a lot 등을 사용하며, very는 원급만 수식하므로 비교급 앞에 쓸 수 없습니다."
+                    },
+                    {
+                        id: 5,
+                        type: "mc",
+                        question: "다음 두 문장의 의미가 같도록 빈칸에 들어갈 말은?",
+                        passage: "No other student in class is taller than Kevin.<br>➜ Kevin is ______ student in class.",
+                        options: ["tall", "taller", "the tallest", "as tall as"],
+                        answer: 2,
+                        explanation: "'아무도 케빈보다 키가 크지 않다'는 것은 '케빈이 반에서 가장 키가 크다(the tallest)'는 의미입니다."
+                    },
+                    {
+                        id: 6,
+                        type: "mc",
+                        question: "다음 두 문장을 한 문장으로 바르게 나타낸 것은?",
+                        passage: "Tom's car is $20,000. Jane's car is $30,000.",
+                        options: [
+                            "Tom's car is more expensive than Jane's.",
+                            "Jane's car is cheaper than Tom's.",
+                            "Jane's car is more expensive than Tom's.",
+                            "Tom's car is as expensive as Jane's."
+                        ],
+                        answer: 2,
+                        explanation: "제인의 차($30,000)가 톰의 차($20,000)보다 더 비싸므로 'Jane's car is more expensive than Tom's.'가 올바릅니다."
+                    },
+                    {
+                        id: 7,
+                        type: "mc",
+                        question: "빈칸에 들어갈 말이 차례대로 바르게 짝지어진 것은?",
+                        passage: "• Health is ______ than money.<br>• Everest is the ______ mountain in the world.",
+                        options: [
+                            "more important - highest",
+                            "important - higher",
+                            "most important - most high",
+                            "more important - higher"
+                        ],
+                        answer: 0,
+                        explanation: "첫 번째는 비교급 than이 있으므로 more important, 두 번째는 최상급 표현인 the highest가 올바릅니다."
+                    },
+                    {
+                        id: 8,
+                        type: "sa",
+                        question: "[단답형] 괄호 안의 단어를 알맞은 비교급 형태(1단어)로 입력하세요.",
+                        passage: "Health is <b>(good)</b> than wealth.<br>➜ Health is ____________ than wealth.",
+                        answer: ["better"],
+                        explanation: "good의 불규칙 비교급 형태는 better입니다."
+                    },
+                    {
+                        id: 9,
+                        type: "sa",
+                        question: "[단답형] 괄호 안의 단어를 최상급 형태(the 포함 2단어)로 입력하세요.",
+                        passage: "This is <b>(heavy)</b> box in the room.<br>➜ This is ____________________ box in the room.",
+                        answer: ["the heaviest"],
+                        explanation: "y로 끝나는 형용사 heavy는 y를 i로 바꾸고 -est를 붙여 the heaviest가 됩니다."
+                    },
+                    {
+                        id: 10,
+                        type: "sa",
+                        question: "[단답형] 괄호 안의 단어를 알맞은 원급 형태로 입력하세요.",
+                        passage: "My phone is as <b>(expensive)</b> as yours.<br>➜ My phone is as ____________ as yours.",
+                        answer: ["expensive"],
+                        explanation: "as ~ as 사이에는 형용사/부사의 원급(expensive)이 들어갑니다."
+                    }
+                ]
+            },
+
+            // Topic 2: 6과 Point 1 - to부정사의 명사적 용법 (10문항)
+            {
+                tabIndex: 2,
+                tabName: "6과-1",
+                category: "6과 문법 ①",
+                title: "to부정사의 명사적 용법",
+                questions: [
+                    {
+                        id: 1,
+                        type: "mc",
+                        question: "다음 밑줄 친 to부정사 중 '명사적 용법(주어)'으로 쓰인 것은?",
+                        options: [
+                            "I have a lot of books <u>to read</u>.",
+                            "<u>To learn</u> English is very fun and useful.",
+                            "She went to the store <u>to buy</u> milk.",
+                            "He was happy <u>to meet</u> his friend."
+                        ],
+                        answer: 1,
+                        explanation: "2번의 'To learn English'는 문장 맨 앞에서 주어 역할(~하는 것)을 하는 to부정사의 명사적 용법입니다. (1번: 형용사적, 3번: 부사적-목적, 4번: 부사적-원인)"
+                    },
+                    {
+                        id: 2,
+                        type: "mc",
+                        question: "다음 문장의 빈칸에 to부정사가 들어갈 수 없는 동사는?",
+                        passage: "I ______ to travel around the world.",
+                        options: ["want", "hope", "decide", "finish"],
+                        answer: 3,
+                        explanation: "finish는 목적어로 동명사(-ing)만을 취하는 동사이므로 to부정사가 바로 뒤에 올 수 없습니다."
+                    },
+                    {
+                        id: 3,
+                        type: "mc",
+                        question: "다음 밑줄 친 부분의 문장 내 역할이 나머지와 다른 하나는?",
+                        options: [
+                            "My dream is <u>to become a doctor</u>.",
+                            "Her hobby is <u>to take photos</u>.",
+                            "His goal is <u>to pass the exam</u>.",
+                            "I want <u>to study math hard</u>."
+                        ],
+                        answer: 3,
+                        explanation: "1, 2, 3번은 모두 be동사 뒤에서 '보어' 역할을 하지만, 4번은 want의 '목적어' 역할을 합니다."
+                    },
+                    {
+                        id: 4,
+                        type: "mc",
+                        question: "다음 두 문장의 의미가 같도록 빈칸에 들어갈 알맞은 단어는?",
+                        passage: "To solve this problem is easy.<br>➜ ______ is easy to solve this problem.",
+                        options: ["This", "That", "It", "There"],
+                        answer: 2,
+                        explanation: "to부정사 주어가 길 때 문두에 가주어 It을 두고, 진주어 to부정사를 뒤로 보냅니다."
+                    },
+                    {
+                        id: 5,
+                        type: "mc",
+                        question: "어법상 어색한 문장은?",
+                        options: [
+                            "I plan to visit my grandmother this weekend.",
+                            "They decided to buy a new car.",
+                            "She hopes to see you again soon.",
+                            "We enjoyed to play soccer yesterday."
+                        ],
+                        answer: 3,
+                        explanation: "enjoy는 동명사(-ing)만을 목적어로 취하는 동사이므로 to play를 playing으로 고쳐야 합니다."
+                    },
+                    {
+                        id: 6,
+                        type: "mc",
+                        question: "다음 보기의 밑줄 친 to부정사와 용법이 같은 것은?",
+                        passage: "[보기] She likes <u>to play</u> the piano in her free time.",
+                        options: [
+                            "I want <u>to eat</u> some pizza.",
+                            "I need a chair <u>to sit</u> on.",
+                            "He studied hard <u>to pass</u> the test.",
+                            "They were surprised <u>to hear</u> the news."
+                        ],
+                        answer: 0,
+                        explanation: "보기의 to play는 타동사 likes의 목적어로 쓰인 '명사적 용법'입니다. 1번의 to eat 역시 want의 목적어인 명사적 용법입니다."
+                    },
+                    {
+                        id: 7,
+                        type: "mc",
+                        question: "우리말 설명에 맞게 영작할 때 빈칸에 들어갈 말은?",
+                        passage: "제 희망은 세계를 여행하는 것입니다.<br>➜ My wish is ______ around the world.",
+                        options: ["travel", "to travel", "traveled", "travels"],
+                        answer: 1,
+                        explanation: "'~하는 것이다'라는 주격 보어 역할을 하는 to부정사 to travel이 올바릅니다."
+                    },
+                    {
+                        id: 8,
+                        type: "sa",
+                        question: "[단답형] 괄호 안의 동사를 명사적 용법의 to부정사로 입력하세요.",
+                        passage: "I promised <b>(help)</b> my friend with her homework.<br>➜ I promised ____________ my friend with her homework.",
+                        answer: ["to help"],
+                        explanation: "promise 동사는 목적어로 to부정사를 취하므로 to help가 됩니다."
+                    },
+                    {
+                        id: 9,
+                        type: "sa",
+                        question: "[단답형] 가주어 It을 사용하여 문장을 다시 쓸 때 빈칸에 알맞은 단어를 입력하세요.",
+                        passage: "To exercise every day is important.<br>➜ ______ is important to exercise every day.",
+                        answer: ["it", "It"],
+                        explanation: "진주어 To exercise ~ 대신 문두에 쓰는 가주어 It(it)입니다."
+                    },
+                    {
+                        id: 10,
+                        type: "sa",
+                        question: "[단답형] 괄호 안의 단어들을 알맞게 배열하여 문장을 완결하세요.",
+                        passage: "그는 의사가 되기를 원한다.<br>➜ He wants <b>(a / doctor / become / to)</b>.<br>➜ He wants ____________________________________.",
+                        answer: ["to become a doctor"],
+                        explanation: "wants의 목적어로 to + 동사원형 + 명사구 순서인 to become a doctor가 정답입니다."
+                    }
+                ]
+            },
+
+            // Topic 3: 6과 Point 2 - 접속사 that (10문항)
+            {
+                tabIndex: 3,
+                tabName: "6과-2",
+                category: "6과 문법 ②",
+                title: "명사절을 이끄는 접속사 that",
+                questions: [
+                    {
+                        id: 1,
+                        type: "mc",
+                        question: "다음 두 문장을 접속사 that을 이용하여 한 문장으로 올바르게 연결한 것은?",
+                        passage: "I think. + She is very kind.",
+                        options: [
+                            "I think that she is very kind.",
+                            "I think that is she very kind.",
+                            "I think she that is very kind.",
+                            "I think is she very kind that."
+                        ],
+                        answer: 0,
+                        explanation: "생각/믿음 등의 동사 뒤에 'that + 주어 + 동사 ~' 형태의 명사절을 연결하므로 1번이 올바릅니다."
+                    },
+                    {
+                        id: 2,
+                        type: "mc",
+                        question: "다음 밑줄 친 that의 쓰임이 나머지와 다른 하나는?",
+                        options: [
+                            "I know <u>that</u> he lives in Seoul.",
+                            "I believe <u>that</u> honesty is important.",
+                            "Look at <u>that</u> tall building over there.",
+                            "She said <u>that</u> she was hungry."
+                        ],
+                        answer: 2,
+                        explanation: "3번의 that은 '저 ~'라는 뜻의 '지시형용사'입니다. 1, 2, 4번의 that은 모두 명사절을 이끄는 '접속사 that'입니다."
+                    },
+                    {
+                        id: 3,
+                        type: "mc",
+                        question: "다음 중 밑줄 친 접속사 that을 생략할 수 없는 경우는?",
+                        options: [
+                            "I hope <u>that</u> you like this present.",
+                            "<u>That</u> earth is round is a well-known fact.",
+                            "He thinks <u>that</u> the test was easy.",
+                            "She believes <u>that</u> tomorrow will be better."
+                        ],
+                        answer: 1,
+                        explanation: "목적어 절을 이끄는 접속사 that은 생략할 수 있으나, 2번처럼 문장 맨 앞에서 주어절을 이끄는 접속사 that은 생략할 수 없습니다."
+                    },
+                    {
+                        id: 4,
+                        type: "mc",
+                        question: "다음 빈칸에 들어갈 말로 가장 어색한 것은?",
+                        passage: "I ______ that the Earth moves around the Sun.",
+                        options: ["know", "believe", "think", "run"],
+                        answer: 3,
+                        explanation: "know, believe, think 등은 that절을 목적어로 취할 수 있지만, 자동사 run은 that절을 목적어로 이끌 수 없습니다."
+                    },
+                    {
+                        id: 5,
+                        type: "mc",
+                        question: "다음 중 어법상 알맞은 문장은?",
+                        options: [
+                            "I know that is she a smart student.",
+                            "She thinks that he will come to the party.",
+                            "We believe that is time money.",
+                            "He said that can he help us."
+                        ],
+                        answer: 1,
+                        explanation: "접속사 that 뒤에는 '주어 + 동사'의 평서문 어순이 와야 합니다. 1, 3, 4번은 동사와 주어 어순이 바뀌어 틀렸습니다."
+                    },
+                    {
+                        id: 6,
+                        type: "mc",
+                        question: "다음 문장의 의미가 통하도록 빈칸에 알맞은 접속사는?",
+                        passage: "I am sure ______ everything will be alright.",
+                        options: ["that", "what", "which", "who"],
+                        answer: 0,
+                        explanation: "be sure that ~ (~임을 확신하다) 구문으로 완전한 절을 이끄는 접속사 that이 올바릅니다."
+                    },
+                    {
+                        id: 7,
+                        type: "mc",
+                        question: "다음 보기의 밑줄 친 that과 쓰임이 같은 것은?",
+                        passage: "[보기] I hope <u>that</u> you achieve your goal.",
+                        options: [
+                            "Who is <u>that</u> boy standing near the door?",
+                            "I didn't like <u>that</u> movie at all.",
+                            "She knows <u>that</u> English is important.",
+                            "Give me <u>that</u> red pen, please."
+                        ],
+                        answer: 2,
+                        explanation: "보기의 that은 명사절을 이끄는 접속사입니다. 3번의 that 역시 knows의 목적어절을 이끄는 접속사입니다. (1, 4번은 지시형용사, 2번은 지시대명사/형용사)"
+                    },
+                    {
+                        id: 8,
+                        type: "sa",
+                        question: "[단답형] 빈칸에 알맞은 접속사 1단어를 입력하세요.",
+                        passage: "I believe ______ honesty is the best policy.",
+                        answer: ["that"],
+                        explanation: "believe 뒤에서 '직접적인 사실/명사절'을 이끄는 접속사 that이 정답입니다."
+                    },
+                    {
+                        id: 9,
+                        type: "sa",
+                        question: "[단답형] 두 문장을 한 문장으로 연결할 때 빈칸에 들어갈 접속사를 입력하세요.",
+                        passage: "She knows it. + You are a diligent student.<br>➜ She knows ______ you are a diligent student.",
+                        answer: ["that"],
+                        explanation: "knows의 목적어로 절을 연결하는 접속사 that을 사용합니다."
+                    },
+                    {
+                        id: 10,
+                        type: "sa",
+                        question: "[단답형] 괄호 안의 단어를 올바른 순서로 배열하여 문장을 완결하세요.",
+                        passage: "나는 그가 친절하다고 생각한다.<br>➜ I think <b>(is / he / kind / that)</b>.<br>➜ I think ____________________________________.",
+                        answer: ["that he is kind"],
+                        explanation: "접속사 that + 주어(he) + 동사(is) + 형용사(kind) 어순으로 배열합니다."
+                    }
+                ]
+            }
+        ];
+
+        // Global State Variables
+        let currentTopicIdx = 0; // 0, 1, 2, 3
+        let currentUnitQIdx = 0; // 0 to 9 inside chosen topic
+        let userStudentId = "";
+        let userStudentName = "";
+
+        // Structure to store answers per topic and question
+        // userAnswers = { 0: { 0: {userVal: '', isCorrect: false, checked: false}, ... }, 1: {...} }
+        let userAnswers = {};
+
+        // App Initialization
+        window.addEventListener('DOMContentLoaded', () => {
+            initAnswersStore();
+            updateTopicBadges();
+        });
+
+        function initAnswersStore() {
+            quizData.forEach((topic, tIdx) => {
+                userAnswers[tIdx] = {};
+                topic.questions.forEach((q, qIdx) => {
+                    userAnswers[tIdx][qIdx] = {
+                        userVal: "",
+                        isCorrect: false,
+                        checked: false
+                    };
+                });
+            });
+        }
+
+        // Student Info Registration Handler
+        function startQuizApp(e) {
+            if (e) e.preventDefault();
+            const idInput = document.getElementById('initStudentId').value.trim();
+            const nameInput = document.getElementById('initStudentName').value.trim();
+
+            if (!idInput || !nameInput) return;
+
+            userStudentId = idInput;
+            userStudentName = nameInput;
+
+            document.getElementById('userDisplay').innerText = `${userStudentId} ${userStudentName}`;
+            document.getElementById('startModal').classList.add('hidden');
+        }
+
+        function openStartModal() {
+            document.getElementById('initStudentId').value = userStudentId;
+            document.getElementById('initStudentName').value = userStudentName;
+            document.getElementById('startModal').classList.remove('hidden');
+        }
+
+        // View Navigation
+        function showTopicMenu() {
+            updateTopicBadges();
+            document.getElementById('topicMenuView').classList.remove('hidden');
+            document.getElementById('quizSolverView').classList.add('hidden');
+            document.getElementById('resultModal').classList.add('hidden');
+        }
+
+        function selectTopic(topicIdx) {
+            if (!userStudentId || !userStudentName) {
+                openStartModal();
+                return;
+            }
+
+            currentTopicIdx = topicIdx;
+            currentUnitQIdx = 0;
+
+            const topicData = quizData[currentTopicIdx];
+            document.getElementById('quizUnitTitleBadge').innerText = topicData.category;
+            document.getElementById('quizUnitTitle').innerText = topicData.title;
+
+            document.getElementById('topicMenuView').classList.add('hidden');
+            document.getElementById('quizSolverView').classList.remove('hidden');
+
+            renderQuestionCard();
+            updateUnitHeader();
+        }
+
+        function restartCurrentTopic() {
+            // Reset answer state for this topic only
+            quizData[currentTopicIdx].questions.forEach((q, qIdx) => {
+                userAnswers[currentTopicIdx][qIdx] = {
+                    userVal: "",
+                    isCorrect: false,
+                    checked: false
+                };
+            });
+            closeModal();
+            selectTopic(currentTopicIdx);
+        }
+
+        function prevUnitQuestion() {
+            if (currentUnitQIdx > 0) {
+                currentUnitQIdx--;
+                renderQuestionCard();
+                updateUnitHeader();
+            }
+        }
+
+        function nextUnitQuestion() {
+            if (currentUnitQIdx < 9) {
+                currentUnitQIdx++;
+                renderQuestionCard();
+                updateUnitHeader();
+            } else {
+                submitUnitQuiz();
+            }
+        }
+
+        // Question Rendering Engine (10 Questions for Selected Unit)
+        function renderQuestionCard() {
+            const topic = quizData[currentTopicIdx];
+            const q = topic.questions[currentUnitQIdx];
+            const savedState = userAnswers[currentTopicIdx][currentUnitQIdx];
+
+            const container = document.getElementById('questionCardArea');
+
+            let typeBadge = q.type === 'mc' 
+                ? `<span class="px-2 py-0.5 text-xs font-semibold bg-blue-50 text-blue-600 rounded border border-blue-200">객관식</span>`
+                : `<span class="px-2 py-0.5 text-xs font-semibold bg-purple-50 text-purple-600 rounded border border-purple-200">단답형 타이핑</span>`;
+
+            let qHtml = `
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between flex-wrap gap-2">
+                        <div class="flex items-center space-x-2">
+                            <span class="px-2.5 py-1 bg-indigo-600 text-white font-bold rounded-lg text-xs">${topic.category}</span>
+                            <span class="text-xs font-bold text-slate-500">${topic.title}</span>
+                            ${typeBadge}
+                        </div>
+                        <span class="text-xs font-extrabold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-full">
+                            Q${currentUnitQIdx + 1} / 10
+                        </span>
+                    </div>
+
+                    <h3 class="font-bold text-slate-900 text-lg leading-snug">${q.question}</h3>
+            `;
+
+            if (q.passage) {
+                qHtml += `
+                    <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 text-sm text-slate-800 leading-relaxed font-mono">
+                        ${q.passage}
+                    </div>
+                `;
+            }
+
+            // Multiple Choice Options
+            if (q.type === 'mc') {
+                qHtml += `<div class="grid grid-cols-1 gap-2.5 mt-4">`;
+                q.options.forEach((opt, optIdx) => {
+                    const isSelected = (savedState.userVal === optIdx);
+                    let btnClass = "w-full text-left p-3.5 text-sm rounded-xl border transition-all flex items-center justify-between ";
+
+                    if (savedState.checked) {
+                        if (optIdx === q.answer) {
+                            btnClass += "correct-bg font-bold shadow-sm";
+                        } else if (isSelected && optIdx !== q.answer) {
+                            btnClass += "incorrect-bg font-bold shadow-sm";
+                        } else {
+                            btnClass += "bg-slate-50 border-slate-200 text-slate-400 opacity-60";
+                        }
+                    } else {
+                        btnClass += "bg-white border-slate-200 text-slate-700 hover:bg-indigo-50/50 hover:border-indigo-300";
+                    }
+
+                    qHtml += `
+                        <button onclick="selectOption(${optIdx})" class="${btnClass}">
+                            <span><strong class="mr-2 text-indigo-600">${optIdx + 1}.</strong> ${opt}</span>
+                            ${savedState.checked && optIdx === q.answer ? '<i class="fa-solid fa-circle-check text-green-600 text-base"></i>' : ''}
+                            ${savedState.checked && isSelected && optIdx !== q.answer ? '<i class="fa-solid fa-circle-xmark text-red-600 text-base"></i>' : ''}
+                        </button>
+                    `;
+                });
+                qHtml += `</div>`;
+            } 
+            // Short Answer Inputs
+            else if (q.type === 'sa') {
+                let inputClass = "w-full p-3.5 text-sm rounded-xl border outline-none font-medium transition-all ";
+                if (savedState.checked) {
+                    inputClass += savedState.isCorrect ? "correct-bg font-bold" : "incorrect-bg font-bold";
+                } else {
+                    inputClass += "bg-slate-50 border-slate-300 focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200";
+                }
+
+                qHtml += `
+                    <div class="mt-4 space-y-3">
+                        <div class="flex gap-2">
+                            <input type="text" 
+                                   id="sa-input-${currentTopicIdx}-${currentUnitQIdx}"
+                                   value="${savedState.userVal}" 
+                                   ${savedState.checked ? 'disabled' : ''}
+                                   placeholder="정답을 입력하세요"
+                                   onkeydown="if(event.key==='Enter') submitShortAnswer()"
+                                   class="${inputClass}">
+                            ${!savedState.checked ? `
+                                <button onclick="submitShortAnswer()" class="px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow transition-all flex-shrink-0">
+                                    정답 제출
+                                </button>
+                            ` : `
+                                <button onclick="resetShortAnswer()" class="px-4 py-3 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs rounded-xl transition-all flex-shrink-0">
+                                    다시 입력
+                                </button>
+                            `}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Explanation Display (Shown on Checked)
+            if (savedState.checked) {
+                const statusBadge = savedState.isCorrect 
+                    ? `<span class="px-2 py-0.5 bg-green-100 text-green-800 font-bold text-xs rounded"><i class="fa-solid fa-check mr-1"></i>정답입니다!</span>`
+                    : `<span class="px-2 py-0.5 bg-red-100 text-red-800 font-bold text-xs rounded"><i class="fa-solid fa-xmark mr-1"></i>오답입니다</span>`;
+
+                qHtml += `
+                    <div class="mt-5 p-4 rounded-xl bg-amber-50/90 border border-amber-200 space-y-2 text-xs text-amber-950 leading-relaxed animate-fade-in shadow-inner">
+                        <div class="flex items-center justify-between border-b border-amber-200/60 pb-2">
+                            <div class="flex items-center space-x-1.5 font-bold text-amber-900 text-sm">
+                                <i class="fa-solid fa-lightbulb text-amber-500 text-base"></i>
+                                <span>정답 및 해설</span>
+                            </div>
+                            ${statusBadge}
+                        </div>
+                        <p class="text-indigo-950 bg-white/80 p-2.5 rounded-lg border border-amber-200 font-semibold text-xs">
+                            <strong>[정답]</strong> ${q.type === 'mc' ? `${q.answer + 1}번 (${q.options[q.answer]})` : q.answer.join(" 또는 ")}
+                        </p>
+                        <p class="mt-1 text-slate-700 text-xs leading-relaxed"><strong>[풀이]</strong> ${q.explanation}</p>
+                    </div>
+                `;
+            }
+
+            qHtml += `</div>`;
+            container.innerHTML = qHtml;
+        }
+
+        // Selection Handlers
+        function selectOption(optIdx) {
+            const q = quizData[currentTopicIdx].questions[currentUnitQIdx];
+            const state = userAnswers[currentTopicIdx][currentUnitQIdx];
+
+            state.userVal = optIdx;
+            state.checked = true;
+            state.isCorrect = (optIdx === q.answer);
+
+            renderQuestionCard();
+            updateUnitHeader();
+        }
+
+        function submitShortAnswer() {
+            const inputElem = document.getElementById(`sa-input-${currentTopicIdx}-${currentUnitQIdx}`);
+            if (!inputElem) return;
+
+            const val = inputElem.value.trim();
+            if (!val) return;
+
+            const q = quizData[currentTopicIdx].questions[currentUnitQIdx];
+            const state = userAnswers[currentTopicIdx][currentUnitQIdx];
+
+            state.userVal = val;
+            state.checked = true;
+
+            const cleanVal = val.toLowerCase().replace(/\s+/g, '');
+            state.isCorrect = q.answer.some(ans => ans.toLowerCase().replace(/\s+/g, '') === cleanVal);
+
+            renderQuestionCard();
+            updateUnitHeader();
+        }
+
+        function resetShortAnswer() {
+            const state = userAnswers[currentTopicIdx][currentUnitQIdx];
+            state.checked = false;
+            state.userVal = "";
+            renderQuestionCard();
+            updateUnitHeader();
+        }
+
+        // Dashboard & Header Updater
+        function updateUnitHeader() {
+            const qNum = currentUnitQIdx + 1;
+            document.getElementById('unitProgressText').innerText = `문제 ${qNum} / 10`;
+            const pct = Math.round((qNum / 10) * 100);
+            document.getElementById('unitPercentageBadge').innerText = `${pct}%`;
+            document.getElementById('unitProgressBar').style.width = `${pct}%`;
+
+            // Calculate Unit Score
+            let score = 0;
+            quizData[currentTopicIdx].questions.forEach((q, qI) => {
+                if (userAnswers[currentTopicIdx][qI].checked && userAnswers[currentTopicIdx][qI].isCorrect) {
+                    score++;
+                }
+            });
+            document.getElementById('unitScore').innerText = score;
+
+            // Nav Buttons
+            document.getElementById('prevBtn').disabled = (currentUnitQIdx === 0);
+            document.getElementById('prevBtn').style.opacity = (currentUnitQIdx === 0) ? "0.5" : "1";
+
+            const nextBtn = document.getElementById('nextBtn');
+            if (currentUnitQIdx === 9) {
+                nextBtn.innerHTML = `<span>단원 제출</span> <i class="fa-solid fa-check-circle"></i>`;
+                nextBtn.className = "px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold rounded-xl shadow-md transition-all flex items-center space-x-2";
+            } else {
+                nextBtn.innerHTML = `<span>다음 문제</span> <i class="fa-solid fa-chevron-right"></i>`;
+                nextBtn.className = "px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded-xl shadow-md transition-all flex items-center space-x-2";
+            }
+        }
+
+        // Update Topic Badges on Main Menu
+        function updateTopicBadges() {
+            quizData.forEach((topic, tIdx) => {
+                let score = 0;
+                let attemptedCount = 0;
+
+                topic.questions.forEach((q, qI) => {
+                    const ans = userAnswers[tIdx][qI];
+                    if (ans.checked) {
+                        attemptedCount++;
+                        if (ans.isCorrect) score++;
+                    }
+                });
+
+                const badgeElem = document.getElementById(`badge-topic-${tIdx}`);
+                if (!badgeElem) return;
+
+                if (attemptedCount === 0) {
+                    badgeElem.className = "text-xs font-semibold px-2.5 py-1 bg-slate-100 text-slate-500 rounded-lg";
+                    badgeElem.innerText = "미응시";
+                } else {
+                    badgeElem.className = "text-xs font-bold px-2.5 py-1 bg-indigo-100 text-indigo-700 rounded-lg";
+                    badgeElem.innerText = `최근 점수: ${score} / 10점`;
+                }
+            });
+        }
+
+        // Unit Quiz Completion & Result Modal
+        function submitUnitQuiz() {
+            let correctCount = 0;
+            quizData[currentTopicIdx].questions.forEach((q, qI) => {
+                if (userAnswers[currentTopicIdx][qI].checked && userAnswers[currentTopicIdx][qI].isCorrect) {
+                    correctCount++;
+                }
+            });
+
+            const topicData = quizData[currentTopicIdx];
+            document.getElementById('modalUnitTitle').innerText = `${topicData.category} (${topicData.title}) 성적표`;
+            document.getElementById('modalStudentName').innerText = `${userStudentId} ${userStudentName}`;
+            document.getElementById('modalCorrectCount').innerText = correctCount;
+
+            const pct = Math.round((correctCount / 10) * 100);
+            document.getElementById('modalPercentage').innerText = pct;
+
+            let feedback = "";
+            if (pct >= 90) {
+                feedback = "🎉 대단합니다! 이 단원의 핵심 문법 개념을 완벽히 파악했습니다.";
+            } else if (pct >= 70) {
+                feedback = "👍 우수합니다! 조금만 더 복습하면 만점을 받을 수 있습니다.";
+            } else {
+                feedback = "✏️ 오답 풀이가 필요합니다! '해설 복습하기'를 통해 헷갈린 문제를 재확인해보세요.";
+            }
+            document.getElementById('modalFeedback').innerText = feedback;
+
+            // Show Result Modal
+            document.getElementById('resultModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('resultModal').classList.add('hidden');
+        }
+
+        function closeModalAndReview() {
+            closeModal();
+            currentUnitQIdx = 0;
+            renderQuestionCard();
+            updateUnitHeader();
+        }
+
+        function closeModalToMenu() {
+            closeModal();
+            showTopicMenu();
+        }
+    </script>
+</body>
+</html>
