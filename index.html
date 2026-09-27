@@ -59,7 +59,7 @@
             margin-top: 10px;
         }
 
-        /* 팝업 모달 스타일 */
+        /* 1. 팝업(모달) 레이어 */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -135,7 +135,7 @@
             background: #4338ca;
         }
 
-        /* 세로 단원 카드 목록 */
+        /* 2. 세로배치 단원 카드 */
         .card-list {
             display: flex;
             flex-direction: column;
@@ -189,7 +189,7 @@
             opacity: 0.8;
         }
 
-        /* 퀴즈 풀이 영역 */
+        /* 3. 퀴즈 영역 */
         .quiz-container {
             display: flex;
             flex-direction: column;
@@ -291,7 +291,7 @@
 </head>
 <body>
 
-    <!-- 1. 학번/이름 입력 팝업(모달) -->
+    <!-- [1단계] 학번/이름 입력 팝업(모달) -->
     <div id="modalOverlay" class="modal-overlay">
         <div class="modal-box">
             <h2>학습자 정보 입력</h2>
@@ -310,10 +310,10 @@
         </div>
     </div>
 
-    <!-- 2. 메인 컨테이너 -->
+    <!-- [2단계] 메인 퀴즈 웹 앱 -->
     <div class="app-container">
         
-        <!-- 단원 선택 메인 화면 -->
+        <!-- 단원 선택 화면 -->
         <div id="mainScreen">
             <div class="header">
                 <h1>영어 문법 학습 퀴즈</h1>
@@ -356,7 +356,7 @@
             </div>
         </div>
 
-        <!-- 3. 퀴즈 풀이 화면 -->
+        <!-- [3단계] 문제 풀이 화면 -->
         <div id="quizScreen" class="quiz-container hidden">
             <div class="quiz-header">
                 <span id="quizTitle" class="quiz-title">단원명</span>
@@ -371,7 +371,7 @@
             <button class="back-btn" onclick="goHome()">단원 선택으로 돌아가기</button>
         </div>
 
-        <!-- 4. 결과 화면 -->
+        <!-- [4단계] 결과 화면 -->
         <div id="resultScreen" class="quiz-container hidden" style="text-align: center;">
             <div class="header">
                 <h2>퀴즈 완료! 🎉</h2>
@@ -450,7 +450,6 @@
         let currentIdx = 0;
         let score = 0;
 
-        // 1. 사용자 정보 저장 및 팝업 닫기
         function saveUserInfo(e) {
             e.preventDefault();
             const id = document.getElementById('studentId').value.trim();
@@ -470,7 +469,6 @@
             display.textContent = `학습자: ${id} ${name}`;
         }
 
-        // 2. 단원 선택 후 퀴즈 시작
         function startQuiz(unitKey) {
             currentUnit = quizData[unitKey];
             if (!currentUnit) return;
@@ -486,7 +484,6 @@
             loadQuestion();
         }
 
-        // 3. 문제 불러오기
         function loadQuestion() {
             const qData = currentUnit.questions[currentIdx];
             document.getElementById('quizProgress').textContent = `${currentIdx + 1} / ${currentUnit.questions.length}`;
@@ -511,7 +508,6 @@
             });
         }
 
-        // 4. 정답 확인 및 해설 노출
         function checkAnswer(selectedIdx) {
             const qData = currentUnit.questions[currentIdx];
             const buttons = document.querySelectorAll('.option-btn');
@@ -534,11 +530,9 @@
             explanationBox.textContent = `💡 해설: ${qData.exp}`;
             explanationBox.classList.remove('hidden');
 
-            // '다음 문제로 이동' 버튼 활성화
             document.getElementById('nextBtn').classList.remove('hidden');
         }
 
-        // 5. 다음 문제 이동 로직
         function nextQuestion() {
             currentIdx++;
             if (currentIdx < currentUnit.questions.length) {
@@ -548,7 +542,6 @@
             }
         }
 
-        // 6. 결과 표시
         function showResult() {
             document.getElementById('quizScreen').classList.add('hidden');
             document.getElementById('resultScreen').classList.remove('hidden');
@@ -569,15 +562,10 @@
             document.getElementById('mainScreen').classList.remove('hidden');
         }
 
-        // 페이지 진입 시 자동 확인
         window.onload = function() {
-            const savedId = localStorage.getItem('studentId');
-            const savedName = localStorage.getItem('studentName');
-
-            if (savedId && savedName) {
-                document.getElementById('modalOverlay').classList.add('hidden');
-                displayUserInfo(savedId, savedName);
-            }
+            // 이전에 저장된 학번/이름 데이터를 초기화하여 항상 첫 진입 시 팝업이 뜨도록 설정합니다.
+            localStorage.removeItem('studentId');
+            localStorage.removeItem('studentName');
         };
     </script>
 </body>
