@@ -3,73 +3,317 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>5과 문법 학습</title>
+    <title>중학 영어 5과 & 6과 문법 퀴즈</title>
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
+
         body {
-            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
-            background-color: #f4f6f9;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
             min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             padding: 20px;
         }
-        h1 {
-            font-size: 2.2rem;
-            margin-bottom: 30px;
-            color: #333;
-            text-align: center;
+
+        .app-container {
+            width: 100%;
+            max-width: 520px;
+            background-color: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+            padding: 30px 24px;
+            position: relative;
+            overflow: hidden;
         }
-        /* 세로 배치 컨테이너 */
-        .button-container {
+
+        /* 헤더 디자인 */
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-weight: 800;
+        }
+
+        .header p {
+            font-size: 0.95rem;
+            color: #7f8c8d;
+        }
+
+        .user-badge {
+            display: inline-block;
+            background: #f0f4f8;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: #34495e;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        /* 세로 4개 카드 컨테이너 */
+        .card-list {
             display: flex;
-            flex-direction: column; /* 세로 정렬 */
-            gap: 20px; /* 버튼 사이 간격 */
-            width: 100%;
-            max-width: 500px; /* 버튼 최대 너비 */
+            flex-direction: column;
+            gap: 16px;
         }
-        /* 시원시원하고 큰 버튼 스타일 */
-        .btn {
-            display: block;
-            width: 100%;
-            padding: 25px 20px;
-            background-color: #4A90E2;
-            color: #ffffff;
-            font-size: 1.8rem; /* 크게 적힌 글자 */
-            font-weight: bold;
-            text-align: center;
-            text-decoration: none;
-            border-radius: 16px;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-            transition: all 0.2s ease-in-out;
-            border: none;
+
+        /* 크게 만든 단원 카드 스타일 */
+        .unit-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 22px 20px;
+            border-radius: 18px;
+            border: 2px solid transparent;
+            background: #ffffff;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
             cursor: pointer;
+            transition: all 0.25s ease;
+            text-decoration: none;
+            position: relative;
         }
-        /* 마우스 호버 및 터치 효과 */
-        .btn:hover, .btn:active {
-            background-color: #357ABD;
-            transform: translateY(-3px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+
+        .unit-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 각 과별 색상 포인트 */
+        .card-unit-1 {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #ffffff;
+        }
+
+        .card-unit-2 {
+            background: linear-gradient(135deg, #37ecba 0%, #72aff3 100%);
+            color: #ffffff;
+        }
+
+        .card-unit-3 {
+            background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
+            color: #ffffff;
+        }
+
+        .card-unit-4 {
+            background: linear-gradient(135deg, #f83600 0%, #f9d423 100%);
+            color: #ffffff;
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 6px;
+            letter-spacing: -0.5px;
+        }
+
+        .card-subtitle {
+            font-size: 1.05rem;
+            font-weight: 500;
+            opacity: 0.95;
+        }
+
+        .card-arrow {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            font-weight: bold;
+            opacity: 0.8;
+        }
+
+        /* 학번/이름 입력 모달 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-box {
+            background: #ffffff;
+            width: 90%;
+            max-width: 400px;
+            padding: 30px 24px;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        .modal-box h2 {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .modal-box p {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #34495e;
+            margin-bottom: 6px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .input-group input:focus {
+            border-color: #3b82f6;
+        }
+
+        .start-btn {
+            width: 100%;
+            padding: 16px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+
+        .start-btn:hover {
+            background: #2563eb;
+        }
+
+        .hidden {
+            display: none !important;
         }
     </style>
 </head>
 <body>
 
-    <h1>5과 문법 학습 링크</h1>
-
-    <div class="button-container">
-        <!-- href 부분에 연결할 링크 주소를 넣으세요 -->
-        <a href="#" class="btn">5과 문법 1번째!</a>
-        <a href="#" class="btn">2번째</a>
-        <a href="#" class="btn">3번째</a>
-        <a href="#" class="btn">4번째</a>
+    <!-- 학번/이름 입력 모달 -->
+    <div id="modalOverlay" class="modal-overlay">
+        <div class="modal-box">
+            <h2>학습자 정보 입력</h2>
+            <p>퀴즈를 시작하기 전에 학번과 이름을 입력하세요.</p>
+            <form id="userForm" onsubmit="saveUserInfo(event)">
+                <div class="input-group">
+                    <label for="studentId">학번 (예: 10101)</label>
+                    <input type="text" id="studentId" placeholder="학번을 입력하세요" required>
+                </div>
+                <div class="input-group">
+                    <label for="studentName">이름</label>
+                    <input type="text" id="studentName" placeholder="이름을 입력하세요" required>
+                </div>
+                <button type="submit" class="start-btn">퀴즈 시작하기</button>
+            </form>
+        </div>
     </div>
 
+    <!-- 메인 컨테이너 -->
+    <div class="app-container">
+        <div class="header">
+            <h1>영어 문법 학습 퀴즈</h1>
+            <p>학습할 단원을 선택하세요</p>
+            <div id="userDisplay" class="user-badge hidden"></div>
+        </div>
+
+        <!-- 세로 4개 크고 명확한 카드 -->
+        <div class="card-list">
+            <div class="unit-card card-unit-1" onclick="selectUnit('5과_1')">
+                <div class="card-title">5과 문법 1번째</div>
+                <div class="card-subtitle">There is / There are 구문</div>
+                <div class="card-arrow">➔</div>
+            </div>
+
+            <div class="unit-card card-unit-2" onclick="selectUnit('5과_2')">
+                <div class="card-title">5과 문법 2번째</div>
+                <div class="card-subtitle">비교급 & 최상급 표현</div>
+                <div class="card-arrow">➔</div>
+            </div>
+
+            <div class="unit-card card-unit-3" onclick="selectUnit('6과_1')">
+                <div class="card-title">6과 문법 1번째</div>
+                <div class="card-subtitle">to부정사의 명사적 용법</div>
+                <div class="card-arrow">➔</div>
+            </div>
+
+            <div class="unit-card card-unit-4" onclick="selectUnit('6과_2')">
+                <div class="card-title">6과 문법 2번째</div>
+                <div class="card-subtitle">접속사 that</div>
+                <div class="card-arrow">➔</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 학번 이름 저장 로직
+        function saveUserInfo(e) {
+            e.preventDefault();
+            const id = document.getElementById('studentId').value.trim();
+            const name = document.getElementById('studentName').value.trim();
+
+            if (id && name) {
+                localStorage.setItem('studentId', id);
+                localStorage.setItem('studentName', name);
+                
+                document.getElementById('modalOverlay').classList.add('hidden');
+                displayUserInfo(id, name);
+            }
+        }
+
+        function displayUserInfo(id, name) {
+            const display = document.getElementById('userDisplay');
+            display.textContent = `학습자: ${id} ${name}`;
+            display.classList.remove('hidden');
+        }
+
+        function selectUnit(unitKey) {
+            alert(`${unitKey} 문제로 이동합니다!`);
+            // 실제 문제 페이지 이동 또는 문제 출력 로직 연결
+        }
+
+        // 페이지 로드 시 기존 정보 확인
+        window.onload = function() {
+            const savedId = localStorage.getItem('studentId');
+            const savedName = localStorage.getItem('studentName');
+
+            if (savedId && savedName) {
+                document.getElementById('modalOverlay').classList.add('hidden');
+                displayUserInfo(savedId, savedName);
+            }
+        };
+    </script>
 </body>
 </html>
