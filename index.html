@@ -59,38 +59,63 @@
             margin-top: 10px;
         }
 
-        /* 1단계: 학번 이름 입력 화면 (큰 화면) */
-        .login-box {
+        /* 팝업 모달 스타일 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
             display: flex;
-            flex-direction: column;
-            gap: 16px;
-            margin-top: 10px;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-box {
+            background: #ffffff;
+            width: 90%;
+            max-width: 400px;
+            padding: 30px 24px;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        .modal-box h2 {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .modal-box p {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-bottom: 20px;
         }
 
         .input-group {
+            margin-bottom: 16px;
             text-align: left;
         }
 
         .input-group label {
             display: block;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 700;
             color: #34495e;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .input-group input {
             width: 100%;
-            padding: 16px;
+            padding: 14px;
             border: 2px solid #e2e8f0;
-            border-radius: 14px;
-            font-size: 1.05rem;
+            border-radius: 12px;
+            font-size: 1rem;
             outline: none;
-            transition: border-color 0.2s;
-        }
-
-        .input-group input:focus {
-            border-color: #4f46e5;
         }
 
         .start-btn {
@@ -99,11 +124,10 @@
             background: #4f46e5;
             color: white;
             border: none;
-            border-radius: 14px;
+            border-radius: 12px;
             font-size: 1.1rem;
             font-weight: 700;
             cursor: pointer;
-            margin-top: 8px;
             transition: background 0.2s;
         }
 
@@ -111,14 +135,13 @@
             background: #4338ca;
         }
 
-        /* 2단계: 단원 선택 카드 목록 */
+        /* 세로 단원 카드 목록 */
         .card-list {
             display: flex;
             flex-direction: column;
             gap: 14px;
         }
 
-        /* 크기를 부담스럽지 않게 조절한 단원 카드 */
         .unit-card {
             display: flex;
             align-items: center;
@@ -148,7 +171,6 @@
             gap: 4px;
         }
 
-        /* 문법 포인트 글자 크기 적절히 감소 */
         .card-title {
             font-size: 1.1rem;
             font-weight: 800;
@@ -269,15 +291,12 @@
 </head>
 <body>
 
-    <div class="app-container">
-        
-        <!-- 1단계: 학번/이름 입력 화면 -->
-        <div id="loginScreen">
-            <div class="header">
-                <h1>영어 문법 퀴즈</h1>
-                <p>시작하기 위해 학생 정보를 입력해 주세요.</p>
-            </div>
-            <form class="login-box" onsubmit="saveUserInfo(event)">
+    <!-- 1. 학번/이름 입력 팝업(모달) -->
+    <div id="modalOverlay" class="modal-overlay">
+        <div class="modal-box">
+            <h2>학습자 정보 입력</h2>
+            <p>퀴즈를 시작하기 전에 학번과 이름을 입력해 주세요.</p>
+            <form onsubmit="saveUserInfo(event)">
                 <div class="input-group">
                     <label for="studentId">학번</label>
                     <input type="text" id="studentId" placeholder="예: 10101" required>
@@ -286,15 +305,19 @@
                     <label for="studentName">이름</label>
                     <input type="text" id="studentName" placeholder="예: 홍길동" required>
                 </div>
-                <button type="submit" class="start-btn">학습 시작하기</button>
+                <button type="submit" class="start-btn">확인 및 시작하기</button>
             </form>
         </div>
+    </div>
 
-        <!-- 2단계: 단원 선택 화면 (적절한 문법 글자 크기) -->
-        <div id="mainScreen" class="hidden">
+    <!-- 2. 메인 컨테이너 -->
+    <div class="app-container">
+        
+        <!-- 단원 선택 메인 화면 -->
+        <div id="mainScreen">
             <div class="header">
-                <h1>단원 선택</h1>
-                <p>풀고 싶은 문법 단원을 선택하세요.</p>
+                <h1>영어 문법 학습 퀴즈</h1>
+                <p>학습할 단원을 선택하세요.</p>
                 <div id="userDisplay" class="user-badge"></div>
             </div>
 
@@ -333,7 +356,7 @@
             </div>
         </div>
 
-        <!-- 3단계: 퀴즈 풀이 화면 -->
+        <!-- 3. 퀴즈 풀이 화면 -->
         <div id="quizScreen" class="quiz-container hidden">
             <div class="quiz-header">
                 <span id="quizTitle" class="quiz-title">단원명</span>
@@ -344,11 +367,11 @@
             <div id="optionsList" class="options-list"></div>
             <div id="explanationBox" class="explanation-box hidden"></div>
 
-            <button id="nextBtn" class="next-btn hidden" onclick="nextQuestion()">다음 문제</button>
+            <button id="nextBtn" class="next-btn hidden" onclick="nextQuestion()">다음 문제로 이동 ➔</button>
             <button class="back-btn" onclick="goHome()">단원 선택으로 돌아가기</button>
         </div>
 
-        <!-- 4단계: 결과 화면 -->
+        <!-- 4. 결과 화면 -->
         <div id="resultScreen" class="quiz-container hidden" style="text-align: center;">
             <div class="header">
                 <h2>퀴즈 완료! 🎉</h2>
@@ -427,6 +450,7 @@
         let currentIdx = 0;
         let score = 0;
 
+        // 1. 사용자 정보 저장 및 팝업 닫기
         function saveUserInfo(e) {
             e.preventDefault();
             const id = document.getElementById('studentId').value.trim();
@@ -436,9 +460,7 @@
                 localStorage.setItem('studentId', id);
                 localStorage.setItem('studentName', name);
                 
-                document.getElementById('loginScreen').classList.add('hidden');
-                document.getElementById('mainScreen').classList.remove('hidden');
-                
+                document.getElementById('modalOverlay').classList.add('hidden');
                 displayUserInfo(id, name);
             }
         }
@@ -448,6 +470,7 @@
             display.textContent = `학습자: ${id} ${name}`;
         }
 
+        // 2. 단원 선택 후 퀴즈 시작
         function startQuiz(unitKey) {
             currentUnit = quizData[unitKey];
             if (!currentUnit) return;
@@ -463,6 +486,7 @@
             loadQuestion();
         }
 
+        // 3. 문제 불러오기
         function loadQuestion() {
             const qData = currentUnit.questions[currentIdx];
             document.getElementById('quizProgress').textContent = `${currentIdx + 1} / ${currentUnit.questions.length}`;
@@ -487,6 +511,7 @@
             });
         }
 
+        // 4. 정답 확인 및 해설 노출
         function checkAnswer(selectedIdx) {
             const qData = currentUnit.questions[currentIdx];
             const buttons = document.querySelectorAll('.option-btn');
@@ -509,9 +534,11 @@
             explanationBox.textContent = `💡 해설: ${qData.exp}`;
             explanationBox.classList.remove('hidden');
 
+            // '다음 문제로 이동' 버튼 활성화
             document.getElementById('nextBtn').classList.remove('hidden');
         }
 
+        // 5. 다음 문제 이동 로직
         function nextQuestion() {
             currentIdx++;
             if (currentIdx < currentUnit.questions.length) {
@@ -521,6 +548,7 @@
             }
         }
 
+        // 6. 결과 표시
         function showResult() {
             document.getElementById('quizScreen').classList.add('hidden');
             document.getElementById('resultScreen').classList.remove('hidden');
@@ -541,13 +569,13 @@
             document.getElementById('mainScreen').classList.remove('hidden');
         }
 
+        // 페이지 진입 시 자동 확인
         window.onload = function() {
             const savedId = localStorage.getItem('studentId');
             const savedName = localStorage.getItem('studentName');
 
             if (savedId && savedName) {
-                document.getElementById('loginScreen').classList.add('hidden');
-                document.getElementById('mainScreen').classList.remove('hidden');
+                document.getElementById('modalOverlay').classList.add('hidden');
                 displayUserInfo(savedId, savedName);
             }
         };
