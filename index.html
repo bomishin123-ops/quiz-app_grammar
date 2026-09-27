@@ -59,7 +59,7 @@
             margin-top: 10px;
         }
 
-        /* 1. 팝업(모달) 레이어 */
+        /* 1. 학번/이름 입력 팝업(모달) */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -135,7 +135,7 @@
             background: #4338ca;
         }
 
-        /* 2. 세로배치 단원 카드 */
+        /* 2. 세로배치 단원 카드 목록 */
         .card-list {
             display: flex;
             flex-direction: column;
@@ -272,6 +272,42 @@
             line-height: 1.4;
         }
 
+        /* 4. 결과 리포트 카드 */
+        .result-card {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 20px;
+            margin: 15px 0;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.05rem;
+            color: #334155;
+            border-bottom: 1px dashed #cbd5e1;
+            padding-bottom: 8px;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .result-item .label {
+            font-weight: 700;
+            color: #64748b;
+        }
+
+        .result-item .value {
+            font-weight: 800;
+            color: #4f46e5;
+        }
+
         .next-btn, .back-btn {
             width: 100%;
             padding: 14px;
@@ -291,7 +327,7 @@
 </head>
 <body>
 
-    <!-- [1단계] 학번/이름 입력 팝업(모달) -->
+    <!-- [1단계] 접속 시 무조건 가장 먼저 뜨는 학번/이름 입력 팝업(모달) -->
     <div id="modalOverlay" class="modal-overlay">
         <div class="modal-box">
             <h2>학습자 정보 입력</h2>
@@ -310,10 +346,8 @@
         </div>
     </div>
 
-    <!-- [2단계] 메인 퀴즈 웹 앱 -->
+    <!-- [2단계] 메인 화면 -->
     <div class="app-container">
-        
-        <!-- 단원 선택 화면 -->
         <div id="mainScreen">
             <div class="header">
                 <h1>영어 문법 학습 퀴즈</h1>
@@ -356,7 +390,7 @@
             </div>
         </div>
 
-        <!-- [3단계] 문제 풀이 화면 -->
+        <!-- [3단계] 퀴즈 풀이 화면 -->
         <div id="quizScreen" class="quiz-container hidden">
             <div class="quiz-header">
                 <span id="quizTitle" class="quiz-title">단원명</span>
@@ -371,15 +405,30 @@
             <button class="back-btn" onclick="goHome()">단원 선택으로 돌아가기</button>
         </div>
 
-        <!-- [4단계] 결과 화면 -->
+        <!-- [4단계] 최종 결과 화면 (학번 이름 / 맞춘 개수 / 풀이 시간) -->
         <div id="resultScreen" class="quiz-container hidden" style="text-align: center;">
             <div class="header">
                 <h2>퀴즈 완료! 🎉</h2>
-                <p id="resultText" style="font-size: 1.1rem; margin-top: 15px; color: #334155; line-height: 1.6;"></p>
+                <p>학습 결과 리포트입니다.</p>
             </div>
+
+            <div class="result-card">
+                <div class="result-item">
+                    <span class="label">학습자 정보</span>
+                    <span id="resultUser" class="value">-</span>
+                </div>
+                <div class="result-item">
+                    <span class="label">맞춘 개수</span>
+                    <span id="resultScore" class="value">-</span>
+                </div>
+                <div class="result-item">
+                    <span class="label">총 풀이 시간</span>
+                    <span id="resultTime" class="value">-</span>
+                </div>
+            </div>
+
             <button class="next-btn" onclick="goHome()">메인으로 돌아가기</button>
         </div>
-
     </div>
 
     <script>
@@ -449,18 +498,22 @@
         let currentUnit = null;
         let currentIdx = 0;
         let score = 0;
+        let currentStudentId = '';
+        let currentStudentName = '';
+        let startTime = null;
 
+        // 팝업 입력 확인 시 팝업 닫기
         function saveUserInfo(e) {
             e.preventDefault();
-            const id = document.getElementById('studentId').value.trim();
-            const name = document.getElementById('studentName').value.trim();
+            const idInput = document.getElementById('studentId').value.trim();
+            const nameInput = document.getElementById('studentName').value.trim();
 
-            if (id && name) {
-                localStorage.setItem('studentId', id);
-                localStorage.setItem('studentName', name);
-                
+            if (idInput && nameInput) {
+                currentStudentId = idInput;
+                currentStudentName = nameInput;
+
                 document.getElementById('modalOverlay').classList.add('hidden');
-                displayUserInfo(id, name);
+                displayUserInfo(currentStudentId, currentStudentName);
             }
         }
 
@@ -469,12 +522,14 @@
             display.textContent = `학습자: ${id} ${name}`;
         }
 
+        // 퀴즈 시작 (타이머 측정 시작)
         function startQuiz(unitKey) {
             currentUnit = quizData[unitKey];
             if (!currentUnit) return;
 
             currentIdx = 0;
             score = 0;
+            startTime = new Date();
 
             document.getElementById('mainScreen').classList.add('hidden');
             document.getElementById('resultScreen').classList.add('hidden');
@@ -542,18 +597,20 @@
             }
         }
 
+        // 최종 결과 리포트 출력
         function showResult() {
+            const endTime = new Date();
+            const elapsedSeconds = Math.floor((endTime - startTime) / 1000);
+            const minutes = Math.floor(elapsedSeconds / 60);
+            const seconds = elapsedSeconds % 60;
+            const timeString = minutes > 0 ? `${minutes}분 ${seconds}초` : `${seconds}초`;
+
             document.getElementById('quizScreen').classList.add('hidden');
             document.getElementById('resultScreen').classList.remove('hidden');
 
-            const id = localStorage.getItem('studentId') || '';
-            const name = localStorage.getItem('studentName') || '';
-
-            document.getElementById('resultText').innerHTML = `
-                <strong>${id} ${name}</strong> 님 수고하셨습니다!<br><br>
-                점수: <strong>${score * 10}점</strong> / 100점<br>
-                (총 ${currentUnit.questions.length}문항 중 ${score}문항 정답)
-            `;
+            document.getElementById('resultUser').textContent = `${currentStudentId} ${currentStudentName}`;
+            document.getElementById('resultScore').textContent = `${score}개 / ${currentUnit.questions.length}개 (${score * 10}점)`;
+            document.getElementById('resultTime').textContent = timeString;
         }
 
         function goHome() {
@@ -562,10 +619,12 @@
             document.getElementById('mainScreen').classList.remove('hidden');
         }
 
+        // 페이지 진입 시 이전 기록을 남기지 않고 무조건 팝업 출력
         window.onload = function() {
-            // 이전에 저장된 학번/이름 데이터를 초기화하여 항상 첫 진입 시 팝업이 뜨도록 설정합니다.
-            localStorage.removeItem('studentId');
-            localStorage.removeItem('studentName');
+            localStorage.clear();
+            document.getElementById('studentId').value = '';
+            document.getElementById('studentName').value = '';
+            document.getElementById('modalOverlay').classList.remove('hidden');
         };
     </script>
 </body>
