@@ -23,23 +23,21 @@
 
         .app-container {
             width: 100%;
-            max-width: 550px;
+            max-width: 500px;
             background-color: #ffffff;
             border-radius: 24px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
-            padding: 30px 24px;
+            padding: 32px 24px;
             position: relative;
-            overflow: hidden;
         }
 
-        /* 헤더 디자인 */
         .header {
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 24px;
         }
 
         .header h1 {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             color: #2c3e50;
             margin-bottom: 8px;
             font-weight: 800;
@@ -52,80 +50,119 @@
 
         .user-badge {
             display: inline-block;
-            background: #f0f4f8;
+            background: #eef2ff;
             padding: 6px 16px;
             border-radius: 20px;
             font-size: 0.9rem;
-            color: #34495e;
-            font-weight: 600;
+            color: #4f46e5;
+            font-weight: 700;
             margin-top: 10px;
         }
 
-        /* 세로 4개 카드 컨테이너 */
-        .card-list {
+        /* 1단계: 학번 이름 입력 화면 (큰 화면) */
+        .login-box {
             display: flex;
             flex-direction: column;
             gap: 16px;
+            margin-top: 10px;
         }
 
-        /* 크게 만든 단원 카드 스타일 */
-        .unit-card {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 22px 20px;
-            border-radius: 18px;
-            border: none;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            position: relative;
+        .input-group {
             text-align: left;
         }
 
+        .input-group label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #34495e;
+            margin-bottom: 8px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 14px;
+            font-size: 1.05rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .input-group input:focus {
+            border-color: #4f46e5;
+        }
+
+        .start-btn {
+            width: 100%;
+            padding: 16px;
+            background: #4f46e5;
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: background 0.2s;
+        }
+
+        .start-btn:hover {
+            background: #4338ca;
+        }
+
+        /* 2단계: 단원 선택 카드 목록 */
+        .card-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        /* 크기를 부담스럽지 않게 조절한 단원 카드 */
+        .unit-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 20px;
+            border-radius: 16px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            width: 100%;
+        }
+
         .unit-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
         }
 
-        .card-unit-1 {
-            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-            color: #ffffff;
+        .card-unit-1 { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: #ffffff; }
+        .card-unit-2 { background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%); color: #ffffff; }
+        .card-unit-3 { background: linear-gradient(135deg, #ec4899 0%, #db2777 100%); color: #ffffff; }
+        .card-unit-4 { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #ffffff; }
+
+        .card-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
         }
 
-        .card-unit-2 {
-            background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
-            color: #ffffff;
-        }
-
-        .card-unit-3 {
-            background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
-            color: #ffffff;
-        }
-
-        .card-unit-4 {
-            background: linear-gradient(135deg, #f83600 0%, #f9d423 100%);
-            color: #ffffff;
-        }
-
+        /* 문법 포인트 글자 크기 적절히 감소 */
         .card-title {
-            font-size: 1.4rem;
+            font-size: 1.1rem;
             font-weight: 800;
-            margin-bottom: 6px;
-            letter-spacing: -0.5px;
+            letter-spacing: -0.3px;
         }
 
         .card-subtitle {
-            font-size: 1.05rem;
+            font-size: 0.92rem;
             font-weight: 500;
-            opacity: 0.95;
+            opacity: 0.9;
         }
 
         .card-arrow {
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             font-weight: bold;
             opacity: 0.8;
         }
@@ -134,37 +171,37 @@
         .quiz-container {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 18px;
         }
 
         .quiz-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid #eee;
+            border-bottom: 2px solid #f1f5f9;
             padding-bottom: 12px;
         }
 
         .quiz-title {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #2c3e50;
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #1e293b;
         }
 
         .quiz-progress {
-            font-size: 0.95rem;
-            color: #3b82f6;
+            font-size: 0.9rem;
+            color: #4f46e5;
             font-weight: 700;
         }
 
         .question-box {
-            font-size: 1.15rem;
+            font-size: 1.05rem;
             font-weight: 700;
-            color: #333;
+            color: #334155;
             line-height: 1.5;
             background: #f8fafc;
             padding: 16px;
-            border-radius: 12px;
+            border-radius: 14px;
         }
 
         .options-list {
@@ -180,14 +217,15 @@
             border: 2px solid #e2e8f0;
             border-radius: 12px;
             text-align: left;
-            font-size: 1rem;
+            font-size: 0.95rem;
             cursor: pointer;
             transition: all 0.2s;
+            color: #334155;
         }
 
         .option-btn:hover {
-            border-color: #3b82f6;
-            background: #eff6ff;
+            border-color: #6366f1;
+            background: #f5f3ff;
         }
 
         .option-btn.correct {
@@ -206,8 +244,8 @@
         .explanation-box {
             background: #f1f5f9;
             padding: 14px;
-            border-radius: 10px;
-            font-size: 0.95rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
             color: #475569;
             line-height: 1.4;
         }
@@ -217,162 +255,85 @@
             padding: 14px;
             border: none;
             border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .next-btn {
-            background: #3b82f6;
-            color: white;
-        }
-
-        .next-btn:hover {
-            background: #2563eb;
-        }
-
-        .back-btn {
-            background: #e2e8f0;
-            color: #475569;
-            margin-top: 10px;
-        }
-
-        /* 모달 스타일 */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(4px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .modal-box {
-            background: #ffffff;
-            width: 90%;
-            max-width: 400px;
-            padding: 30px 24px;
-            border-radius: 20px;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
-            text-align: center;
-        }
-
-        .modal-box h2 {
-            font-size: 1.5rem;
-            color: #2c3e50;
-            margin-bottom: 8px;
-        }
-
-        .modal-box p {
-            font-size: 0.9rem;
-            color: #7f8c8d;
-            margin-bottom: 20px;
-        }
-
-        .input-group {
-            margin-bottom: 16px;
-            text-align: left;
-        }
-
-        .input-group label {
-            display: block;
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: #34495e;
-            margin-bottom: 6px;
-        }
-
-        .input-group input {
-            width: 100%;
-            padding: 14px;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            font-size: 1rem;
-            outline: none;
-        }
-
-        .start-btn {
-            width: 100%;
-            padding: 16px;
-            background: #3b82f6;
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.1rem;
+            font-size: 0.98rem;
             font-weight: 700;
             cursor: pointer;
         }
 
-        .hidden {
-            display: none !important;
-        }
+        .next-btn { background: #4f46e5; color: white; }
+        .next-btn:hover { background: #4338ca; }
+        .back-btn { background: #f1f5f9; color: #64748b; margin-top: 8px; }
+
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-    <!-- 학번/이름 입력 모달 -->
-    <div id="modalOverlay" class="modal-overlay">
-        <div class="modal-box">
-            <h2>학습자 정보 입력</h2>
-            <p>퀴즈를 시작하기 전에 학번과 이름을 입력하세요.</p>
-            <form id="userForm" onsubmit="saveUserInfo(event)">
+    <div class="app-container">
+        
+        <!-- 1단계: 학번/이름 입력 화면 -->
+        <div id="loginScreen">
+            <div class="header">
+                <h1>영어 문법 퀴즈</h1>
+                <p>시작하기 위해 학생 정보를 입력해 주세요.</p>
+            </div>
+            <form class="login-box" onsubmit="saveUserInfo(event)">
                 <div class="input-group">
-                    <label for="studentId">학번 (예: 10101)</label>
-                    <input type="text" id="studentId" placeholder="학번을 입력하세요" required>
+                    <label for="studentId">학번</label>
+                    <input type="text" id="studentId" placeholder="예: 10101" required>
                 </div>
                 <div class="input-group">
                     <label for="studentName">이름</label>
-                    <input type="text" id="studentName" placeholder="이름을 입력하세요" required>
+                    <input type="text" id="studentName" placeholder="예: 홍길동" required>
                 </div>
-                <button type="submit" class="start-btn">퀴즈 시작하기</button>
+                <button type="submit" class="start-btn">학습 시작하기</button>
             </form>
         </div>
-    </div>
 
-    <!-- 메인 컨테이너 -->
-    <div class="app-container">
-        <!-- 단원 선택 화면 -->
-        <div id="mainScreen">
+        <!-- 2단계: 단원 선택 화면 (적절한 문법 글자 크기) -->
+        <div id="mainScreen" class="hidden">
             <div class="header">
-                <h1>영어 문법 학습 퀴즈</h1>
-                <p>학습할 단원을 선택하세요</p>
-                <div id="userDisplay" class="user-badge hidden"></div>
+                <h1>단원 선택</h1>
+                <p>풀고 싶은 문법 단원을 선택하세요.</p>
+                <div id="userDisplay" class="user-badge"></div>
             </div>
 
             <div class="card-list">
-                <div class="unit-card card-unit-1" onclick="startQuiz('5과_1')">
-                    <div class="card-title">5과 문법 1번째</div>
-                    <div class="card-subtitle">There is / There are 구문</div>
+                <button type="button" class="unit-card card-unit-1" onclick="startQuiz('5과_1')">
+                    <div class="card-info">
+                        <div class="card-title">5과 문법 1번째</div>
+                        <div class="card-subtitle">There is / There are 구문</div>
+                    </div>
                     <div class="card-arrow">➔</div>
-                </div>
+                </button>
 
-                <div class="unit-card card-unit-2" onclick="startQuiz('5과_2')">
-                    <div class="card-title">5과 문법 2번째</div>
-                    <div class="card-subtitle">비교급 & 최상급 표현</div>
+                <button type="button" class="unit-card card-unit-2" onclick="startQuiz('5과_2')">
+                    <div class="card-info">
+                        <div class="card-title">5과 문법 2번째</div>
+                        <div class="card-subtitle">비교급 & 최상급 표현</div>
+                    </div>
                     <div class="card-arrow">➔</div>
-                </div>
+                </button>
 
-                <div class="unit-card card-unit-3" onclick="startQuiz('6과_1')">
-                    <div class="card-title">6과 문법 1번째</div>
-                    <div class="card-subtitle">to부정사의 명사적 용법</div>
+                <button type="button" class="unit-card card-unit-3" onclick="startQuiz('6과_1')">
+                    <div class="card-info">
+                        <div class="card-title">6과 문법 1번째</div>
+                        <div class="card-subtitle">to부정사의 명사적 용법</div>
+                    </div>
                     <div class="card-arrow">➔</div>
-                </div>
+                </button>
 
-                <div class="unit-card card-unit-4" onclick="startQuiz('6과_2')">
-                    <div class="card-title">6과 문법 2번째</div>
-                    <div class="card-subtitle">접속사 that</div>
+                <button type="button" class="unit-card card-unit-4" onclick="startQuiz('6과_2')">
+                    <div class="card-info">
+                        <div class="card-title">6과 문법 2번째</div>
+                        <div class="card-subtitle">접속사 that</div>
+                    </div>
                     <div class="card-arrow">➔</div>
-                </div>
+                </button>
             </div>
         </div>
 
-        <!-- 퀴즈 풀이 화면 -->
+        <!-- 3단계: 퀴즈 풀이 화면 -->
         <div id="quizScreen" class="quiz-container hidden">
             <div class="quiz-header">
                 <span id="quizTitle" class="quiz-title">단원명</span>
@@ -380,27 +341,25 @@
             </div>
 
             <div id="questionBox" class="question-box">문제가 여기에 표시됩니다.</div>
-
             <div id="optionsList" class="options-list"></div>
-
             <div id="explanationBox" class="explanation-box hidden"></div>
 
             <button id="nextBtn" class="next-btn hidden" onclick="nextQuestion()">다음 문제</button>
             <button class="back-btn" onclick="goHome()">단원 선택으로 돌아가기</button>
         </div>
 
-        <!-- 결과 화면 -->
+        <!-- 4단계: 결과 화면 -->
         <div id="resultScreen" class="quiz-container hidden" style="text-align: center;">
             <div class="header">
                 <h2>퀴즈 완료! 🎉</h2>
-                <p id="resultText" style="font-size: 1.2rem; margin-top: 15px; color: #333;"></p>
+                <p id="resultText" style="font-size: 1.1rem; margin-top: 15px; color: #334155; line-height: 1.6;"></p>
             </div>
             <button class="next-btn" onclick="goHome()">메인으로 돌아가기</button>
         </div>
+
     </div>
 
     <script>
-        // 퀴즈 데이터 (단원별 10문항)
         const quizData = {
             '5과_1': {
                 title: '5과: There is / There are',
@@ -420,7 +379,7 @@
             '5과_2': {
                 title: '5과: 비교급 & 최상급',
                 questions: [
-                    { q: 'tall의 비교급과 최상급이 바르게 연결된 것은?', options: ['taller - tallest', 'more tall - most tall', 'taller - most tall', 'more tall - tallest'], answer: 0, exp: 'tall은 short adjective로 -er, -est를 붙입니다.' },
+                    { q: 'tall의 비교급과 최상급이 바르게 연결된 것은?', options: ['taller - tallest', 'more tall - most tall', 'taller - most tall', 'more tall - tallest'], answer: 0, exp: 'tall은 짧은 형용사로 -er, -est를 붙입니다.' },
                     { q: 'beautiful의 비교급으로 알맞은 것은?', options: ['beautifuler', 'more beautiful', 'beautifulest', 'most beautiful'], answer: 1, exp: '3음절 이상의 긴 단어는 앞에 more를 붙입니다.' },
                     { q: 'good의 비교급과 최상급은?', options: ['gooder - goodest', 'better - best', 'more good - most good', 'better - most good'], answer: 1, exp: 'good은 불규칙 변화로 good - better - best 입니다.' },
                     { q: '다음 빈칸에 알맞은 것은? "Jupiter is _____ planet in our solar system."', options: ['big', 'bigger', 'the biggest', 'most big'], answer: 2, exp: '최상급 앞에는 정관사 the가 붙습니다.' },
@@ -476,7 +435,10 @@
             if (id && name) {
                 localStorage.setItem('studentId', id);
                 localStorage.setItem('studentName', name);
-                document.getElementById('modalOverlay').classList.add('hidden');
+                
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('mainScreen').classList.remove('hidden');
+                
                 displayUserInfo(id, name);
             }
         }
@@ -484,11 +446,12 @@
         function displayUserInfo(id, name) {
             const display = document.getElementById('userDisplay');
             display.textContent = `학습자: ${id} ${name}`;
-            display.classList.remove('hidden');
         }
 
         function startQuiz(unitKey) {
             currentUnit = quizData[unitKey];
+            if (!currentUnit) return;
+
             currentIdx = 0;
             score = 0;
 
@@ -516,6 +479,7 @@
 
             qData.options.forEach((opt, idx) => {
                 const btn = document.createElement('button');
+                btn.type = 'button';
                 btn.className = 'option-btn';
                 btn.textContent = `${idx + 1}. ${opt}`;
                 btn.onclick = () => checkAnswer(idx);
@@ -582,7 +546,8 @@
             const savedName = localStorage.getItem('studentName');
 
             if (savedId && savedName) {
-                document.getElementById('modalOverlay').classList.add('hidden');
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('mainScreen').classList.remove('hidden');
                 displayUserInfo(savedId, savedName);
             }
         };
